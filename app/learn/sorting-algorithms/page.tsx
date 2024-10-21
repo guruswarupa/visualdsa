@@ -49,11 +49,11 @@ export default function SortingAlgorithms() {
                     break;
             }
         }
-    }, [sorting, selectedAlgorithm]);
+    }, [sorting, selectedAlgorithm, array]);
 
     const bubbleSort = async (arr: number[]) => {
         const newArr = [...arr];
-        let n = newArr.length;
+        const n = newArr.length;
         for (let i = 0; i < n - 1; i++) {
             for (let j = 0; j < n - i - 1; j++) {
                 setCurrentPair([j, j + 1]);
@@ -75,9 +75,9 @@ export default function SortingAlgorithms() {
 
     const insertionSort = async (arr: number[]) => {
         const newArr = [...arr];
-        let n = newArr.length;
+        const n = newArr.length;
         for (let i = 1; i < n; i++) {
-            let key = newArr[i];
+            const key = newArr[i];
             let j = i - 1;
     
             while (j >= 0 && newArr[j] > key) {
@@ -103,7 +103,7 @@ export default function SortingAlgorithms() {
     
     const selectionSort = async (arr: number[]) => {
         const newArr = [...arr];
-        let n = newArr.length;
+        const n = newArr.length;
 
         for (let i = 0; i < n - 1; i++) {
             let minIndex = i;
