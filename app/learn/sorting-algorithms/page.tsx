@@ -49,7 +49,7 @@ export default function SortingAlgorithms() {
                     break;
             }
         }
-    }, [sorting, selectedAlgorithm, array]);
+    }, [sorting, selectedAlgorithm]);
 
     const bubbleSort = async (arr: number[]) => {
         const newArr = [...arr];
