@@ -16,7 +16,7 @@ export default function SortingAlgorithms() {
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
 
     const handleArrayInput = () => {
-        const numbers = arrayInput.split(",").map(Number);
+        const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
         setArray(numbers);
         setOriginalArray(numbers); // Store original array
         setSorting(false);
@@ -131,39 +131,44 @@ export default function SortingAlgorithms() {
     const bingoSort = async (arr: number[]) => {
         const newArr = [...arr];
         const max = Math.max(...newArr);
-        const sorted: boolean[] = Array(max + 1).fill(false);
+        const min = Math.min(...newArr);
+        const offset = Math.abs(min); // Offset for negative numbers
+        const sorted: boolean[] = Array(max + offset + 1).fill(false);
     
         // Mark each number in the sorted array
         for (const num of newArr) {
-            sorted[num] = true;
+            sorted[num + offset] = true; // Adjust index for negative numbers
         }
     
-        // Collect sorted numbers
         const result: number[] = [];
+    
+        // Collect sorted numbers
         for (let i = 0; i < sorted.length; i++) {
             if (sorted[i]) {
-                result.push(i);
-                setArray([...result]);
-                setCurrentPair([result.length - 1, i]);
+                result.push(i - offset); // Adjust index back to original value
+                setArray([...result]); // Update displayed array with the current state of sorted results
+                setCurrentPair([result.length - 1, i - offset]); // Highlight the last collected number
                 await delay(1000); // Slow down the visualization
             }
         }
     
+        // After collecting all numbers, update the sorted index
         setSortedIndex([...Array(result.length).keys()]); // Mark all as sorted
         setCurrentPair(null);
         setSorting(false);
-    };
-        
+    };    
+                    
     const bucketSort = async (arr: number[]) => {
         const newArr = [...arr];
         const max = Math.max(...newArr);
         const min = Math.min(...newArr);
         const bucketCount = Math.floor(max - min) + 1;
         const buckets: number[][] = Array.from({ length: bucketCount }, () => []);
-    
+
         // Fill the buckets
         newArr.forEach(num => {
-            buckets[num - min].push(num);
+            const bucketIndex = Math.floor(num - min); // Adjust index for negative numbers
+            buckets[bucketIndex].push(num);
         });
 
         const result: number[] = []; // Store the sorted result
@@ -180,7 +185,7 @@ export default function SortingAlgorithms() {
                 }
             }
         }
-    
+
         setSortedIndex([...Array(result.length).keys()]); // Mark all as sorted
         setCurrentPair(null);
         setSorting(false);
@@ -189,20 +194,22 @@ export default function SortingAlgorithms() {
     const countingSort = async (arr: number[]) => {
         const newArr = [...arr];
         const max = Math.max(...newArr);
-        const count: number[] = Array(max + 1).fill(0);
+        const min = Math.min(...newArr);
+        const offset = Math.abs(min); // Offset for negative numbers
+        const count: number[] = Array(max + offset + 1).fill(0);
         const result: number[] = [];
     
         // Count each number's occurrences
         for (const num of newArr) {
-            count[num]++;
+            count[num + offset]++; // Adjust index for negative numbers
         }
     
         // Build the sorted array
         for (let i = 0; i < count.length; i++) {
             while (count[i] > 0) {
-                result.push(i);
+                result.push(i - offset); // Adjust index back to original value
                 setArray([...result]);
-                setCurrentPair([result.length - 1, i]);
+                setCurrentPair([result.length - 1, i - offset]);
                 await delay(1000); // Slow down the visualization
                 count[i]--;
             }
@@ -211,8 +218,8 @@ export default function SortingAlgorithms() {
         setSortedIndex([...Array(result.length).keys()]); // Mark all as sorted
         setCurrentPair(null);
         setSorting(false);
-    };    
-
+    };
+     
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     return (
