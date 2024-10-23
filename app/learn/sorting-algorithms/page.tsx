@@ -45,6 +45,23 @@ export default function SortingAlgorithms() {
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
     const [speed, setSpeed] = useState(1000); // Default speed 1s
     const [iterationCount, setIterationCount] = useState(0); // State to track number of iterations
+    const [advantages, setAdvantages] = useState([]);
+    const [disadvantages, setDisadvantages] = useState([]);
+
+    useEffect(() => {
+        const fetchAlgorithmData = async () => {
+            const response = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/info.json`);
+            if (response.ok) {
+                const data = await response.json();
+                setAdvantages(data.advantages);
+                setDisadvantages(data.disadvantages);
+            } else {
+                console.error('Failed to fetch algorithm data');
+            }
+        };
+
+        fetchAlgorithmData();
+    }, [selectedAlgorithm]);
 
     const handleArrayInput = () => {
         const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
@@ -575,61 +592,61 @@ export default function SortingAlgorithms() {
     //Bitonic Sort
     const bitonicSort = async (arr: number[]) => {
         const newArr = [...arr];
-    
+
         // Utility function for swapping based on direction
         const compAndSwap = async (a: number[], i: number, j: number, dir: boolean) => {
             setCurrentPair([i, j]);
             setIterationCount((prev) => prev + 1); // Increment iteration count
             await delay(speed);
-    
+
             // Swap based on the direction (true for ascending, false for descending)
             if ((dir && a[i] > a[j]) || (!dir && a[i] < a[j])) {
                 [a[i], a[j]] = [a[j], a[i]]; // Swap elements
                 setArray([...a]); // Update array state for visualization
             }
         };
-    
+
         // Recursively merges the bitonic sequence
         const bitonicMerge = async (a: number[], low: number, cnt: number, dir: boolean) => {
             if (cnt > 1) {
                 const k = Math.floor(cnt / 2);
-    
+
                 // Perform the comparison and swap in the first half of the sequence
                 for (let i = low; i < low + k; i++) {
                     await compAndSwap(a, i, i + k, dir);
                 }
-    
+
                 // Recursively merge both halves
                 await bitonicMerge(a, low, k, dir);
                 await bitonicMerge(a, low + k, k, dir);
             }
         };
-    
+
         // Recursively sorts a bitonic sequence in ascending (dir = true) or descending (dir = false) order
         const bitonicSortHelper = async (a: number[], low: number, cnt: number, dir: boolean) => {
             if (cnt > 1) {
                 const k = Math.floor(cnt / 2);
-    
+
                 // Sort the first half in ascending order (dir = true)
                 await bitonicSortHelper(a, low, k, true);
-    
+
                 // Sort the second half in descending order (dir = false)
                 await bitonicSortHelper(a, low + k, k, false);
-    
+
                 // Merge the two halves in the specified direction
                 await bitonicMerge(a, low, cnt, dir);
             }
         };
-    
+
         // Start the Bitonic Sort process
         await bitonicSortHelper(newArr, 0, newArr.length, true);
-    
+
         // Mark all elements as sorted
         setSortedIndex([...Array(newArr.length).keys()]);
         setCurrentPair(null);
         setSorting(false);
     };
-    
+
     // Cycle Sort
     const cycleSort = async (arr: number[]) => {
         const newArr = [...arr];
@@ -957,6 +974,7 @@ export default function SortingAlgorithms() {
         }
     };
 
+    //bogo sort
     const bogoSort = async (arr: number[]) => {
         const newArr = [...arr];
         setSpeed(0);
@@ -975,16 +993,15 @@ export default function SortingAlgorithms() {
     };
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
     return (
-        <div className="flex min-h-screen bg-[#121212] text-[#E0E0E0]">
+        <div className="flex flex-col min-h-screen bg-[#121212] text-[#E0E0E0] lg:flex-row">
             <motion.div
-                className="w-full sm:w-1/4 p-6 bg-[#1F1F1F] border-r border-gray-700"
+                className="w-full lg:w-1/4 p-6 bg-[#1F1F1F] border-b lg:border-b-0 lg:border-r border-gray-700 shadow-lg"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
             >
-                <h2 className="text-2xl font-bold mb-4 text-[#F5F5F5]">Sorting Algorithms</h2>
+                <h2 className="text-xl sm:text-2xl font-bold mb-4 text-[#F5F5F5]">Sorting Algorithms</h2>
                 <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Algorithm:</label>
                 <select
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
@@ -992,10 +1009,10 @@ export default function SortingAlgorithms() {
                     onChange={(e) => {
                         const selectedValue = e.target.value;
                         setSelectedAlgorithm(selectedValue);
-
+    
                         // Automatically set speed to "instant" if Bogo Sort is selected
                         if (selectedValue === "Bogo Sort") {
-                            setSpeed(0); // Assuming "instant" speed is represented by 0
+                            setSpeed(0); // Instant speed for Bogo Sort
                         }
                     }}
                 >
@@ -1005,7 +1022,7 @@ export default function SortingAlgorithms() {
                         </option>
                     ))}
                 </select>
-
+    
                 <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Speed:</label>
                 <select
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
@@ -1018,25 +1035,24 @@ export default function SortingAlgorithms() {
                         </option>
                     ))}
                 </select>
-
-                {/* Conditional message for algorithms that don't support negative or decimal numbers */}
+    
                 {(selectedAlgorithm === "Bucket Sort" || selectedAlgorithm === "Radix Sort" || selectedAlgorithm === "Counting Sort") && (
                     <p className="text-sm text-red-500 mb-4">
                         Note: Traditional {selectedAlgorithm} does not support negative numbers or decimal values.
                     </p>
                 )}
-                {(selectedAlgorithm === "Bogo Sort") && (
+                {selectedAlgorithm === "Bogo Sort" && (
                     <p className="text-sm text-red-500 mb-4">
                         Note: {selectedAlgorithm} is an unpredictable sorting algorithm.
                     </p>
                 )}
-                <h3 className="text-lg font-semibold mb-2">Input Array</h3>
-                {(selectedAlgorithm === "Bitonic Sort") && (
+                {selectedAlgorithm === "Bitonic Sort" && (
                     <p className="text-sm text-red-500 mb-4">
-                        Note: {selectedAlgorithm} works only when size of input is a power of 2.
+                        Note: {selectedAlgorithm} works only when the size of the input is a power of 2.
                     </p>
                 )}
-
+    
+                <h3 className="text-lg font-semibold mb-2">Input Array</h3>
                 <input
                     type="text"
                     value={arrayInput}
@@ -1044,40 +1060,40 @@ export default function SortingAlgorithms() {
                     placeholder="Enter numbers separated by commas"
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
                 />
-
+    
                 <button
                     onClick={() => {
                         setIterationCount(0);
                         handleArrayInput();
                         setSorting(true);
                     }}
-                    className="bg-[#E62B1E] hover:bg-[#C6261A] text-white py-2 px-4 rounded-md transition"
+                    className="bg-[#E62B1E] hover:bg-[#C6261A] text-white py-2 px-4 rounded-md transition w-full"
                     disabled={sorting}
                 >
                     Visualize Sorting
                 </button>
             </motion.div>
-
+    
             <motion.div
-                className="w-full sm:w-3/4 p-6 bg-[#121212] flex items-center justify-center"
+                className="w-full lg:w-3/4 p-6 bg-[#121212] overflow-y-auto rounded-lg shadow-lg"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
             >
-                <div className="w-full h-full flex flex-col items-center justify-center bg-[#1F1F1F] p-8 rounded-lg">
+                <div className="flex flex-col items-center justify-center bg-[#1F1F1F] p-4 sm:p-8 rounded-lg">
                     {array.length > 0 ? (
                         <div className="text-center w-full">
-                            <h2 className="text-xl font-bold mb-4 text-[#F5F5F5]">
+                            <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#F5F5F5]">
                                 {selectedAlgorithm} Visualization
                             </h2>
-                            <p className="text-lg text-[#F5F5F5] mb-4">Iterations: {iterationCount}</p>
+                            <p className="text-base sm:text-lg text-[#F5F5F5] mb-4">Iterations: {iterationCount}</p>
                             <div className="flex flex-col items-center">
                                 <div className="flex justify-center mb-4">
-                                    {/* Display original array */}
+                                    {/* Original Array */}
                                     {originalArray.map((num, index) => (
                                         <motion.div
                                             key={`original-${index}`}
-                                            className={`bg-blue-600 text-white text-xl p-4 rounded-md mx-1`}
+                                            className="bg-blue-600 text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1"
                                             initial={{ opacity: 0, scale: 0.5 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -1086,14 +1102,14 @@ export default function SortingAlgorithms() {
                                         </motion.div>
                                     ))}
                                 </div>
-
+    
                                 <div className="flex justify-center">
-                                    {/* Display sorted array */}
+                                    {/* Sorted Array */}
                                     {array.map((num, index) => (
                                         <motion.div
                                             key={index}
-                                            className={`${sortedIndex.includes(index) ? "bg-green-500" : "bg-red-600"}
-                                            text-white text-xl p-4 rounded-md mx-1 relative`}
+                                            className={`${sortedIndex.includes(index) ? "bg-green-500" : "bg-red-600"} 
+                                            text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1 relative`}
                                             initial={{ opacity: 0, scale: 0.5 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -1101,23 +1117,23 @@ export default function SortingAlgorithms() {
                                             {num}
                                             {currentPair && (currentPair[0] === index || currentPair[1] === index) && (
                                                 <motion.div
-                                                    className="absolute bottom-[-30px] left-1/2 transform -translate-x-1/2"
+                                                    className="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2"
                                                     initial={{ opacity: 0 }}
                                                     animate={{ opacity: 1 }}
                                                     transition={{ duration: 0.3 }}
                                                 >
-                                                    <ArrowUpIcon className="w-6 h-6 text-white" />
+                                                    <ArrowUpIcon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                                                 </motion.div>
                                             )}
                                         </motion.div>
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Display buckets only for Bucket Sort */}
+    
+                            {/* Buckets for Bucket Sort */}
                             {selectedAlgorithm === "Bucket Sort" && (
                                 <>
-                                    <h2 className="text-xl font-bold mt-4 text-[#F5F5F5]">Buckets</h2>
+                                    <h2 className="text-lg sm:text-xl font-bold mt-4 text-[#F5F5F5]">Buckets</h2>
                                     <div className="flex justify-center">
                                         {array.length > 0 && (
                                             <div className="flex flex-col gap-2">
@@ -1137,12 +1153,27 @@ export default function SortingAlgorithms() {
                                     </div>
                                 </>
                             )}
+                            <div className="my-8 p-4 bg-[#1F1F1F] rounded-lg shadow-md">
+                                <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Advantages</h3>
+                                <ul className="list-disc list-inside mb-4 p-2">
+                                    {advantages.map((adv, index) => (
+                                        <li key={index} className="text-[#E0E0E0] mb-2">{adv}</li>
+                                    ))}
+                                </ul>
+    
+                                <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Disadvantages</h3>
+                                <ul className="list-disc list-inside mb-4 p-2">
+                                    {disadvantages.map((dis, index) => (
+                                        <li key={index} className="text-[#E0E0E0] mb-2">{dis}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     ) : (
-                        <h3 className="text-lg text-[#E0E0E0]">Enter an array to visualize the sorting algorithm.</h3>
+                        <h3 className="text-base sm:text-lg text-[#E0E0E0]">Enter an array to visualize the sorting algorithm.</h3>
                     )}
                 </div>
             </motion.div>
         </div>
-    );
-};
+    );      
+}

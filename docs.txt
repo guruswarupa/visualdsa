@@ -1,0 +1,18 @@
+Primary Background: Darker shade for the main background.
+
+#121212 (Dark Black)
+Card Background: Slightly lighter for content cards.
+
+#1F1F1F (Dark Gray)
+Accent Color: To highlight important elements, buttons, and links.
+
+#E62B1E (TEDx Red)
+Text Color: A light shade for text.
+
+#F5F5F5 (Off-White)
+Secondary Text Color: For less important text or secondary info.
+
+#E0E0E0 (Light Gray)
+Interactive Elements: Hover states or active elements can have a different shade.
+
+#C6261A (Dark Red for hover effects)
