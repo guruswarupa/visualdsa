@@ -38,7 +38,6 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.5 }}
         >
           <Link href="/get-started">
-            {/* No need for <a> tag, Link wraps the contents automatically */}
             <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
               Get Started
             </div>

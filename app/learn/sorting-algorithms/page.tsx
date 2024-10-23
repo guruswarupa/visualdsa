@@ -24,7 +24,8 @@ const sortingOptions = [
     "Pigeonhole Sort",
     "Comb Sort",
     "Introsort",
-    "3-Way Merge Sort"
+    "3-Way Merge Sort",
+    "Bogo Sort"
 ];
 
 const speedOptions = [
@@ -43,6 +44,7 @@ export default function SortingAlgorithms() {
     const [currentPair, setCurrentPair] = useState<[number, number] | null>(null);
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
     const [speed, setSpeed] = useState(1000); // Default speed 1s
+    const [iterationCount, setIterationCount] = useState(0); // State to track number of iterations
 
     const handleArrayInput = () => {
         const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
@@ -110,24 +112,30 @@ export default function SortingAlgorithms() {
                 case "3-Way Merge Sort":
                     mergeSort3Way(array);
                     break;
+                case "Bogo Sort":
+                    bogoSort(array);
+                    break;
                 default:
                     break;
             }
         }
     }, [sorting, selectedAlgorithm]);
 
+    //bubble sort
     const bubbleSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
         for (let i = 0; i < n - 1; i++) {
             for (let j = 0; j < n - i - 1; j++) {
                 setCurrentPair([j, j + 1]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed); // Slow down the sorting
 
                 if (newArr[j] > newArr[j + 1]) {
                     // Swap elements
                     [newArr[j], newArr[j + 1]] = [newArr[j + 1], newArr[j]];
                     setArray([...newArr]);
+                    setIterationCount(prev => prev + 1);
                 }
             }
             setSortedIndex((prev) => [...prev, n - i - 1]); // Mark last sorted element
@@ -138,6 +146,7 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+    //insertion sort
     const insertionSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
@@ -152,9 +161,11 @@ export default function SortingAlgorithms() {
                 newArr[j + 1] = newArr[j];
                 j = j - 1;
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
             }
             newArr[j + 1] = key;
             setArray([...newArr]);
+            setIterationCount(prev => prev + 1);
             setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
             await delay(500);
         }
@@ -166,6 +177,7 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+    //selection sort
     const selectionSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
@@ -175,6 +187,7 @@ export default function SortingAlgorithms() {
             for (let j = i + 1; j < n; j++) {
                 setCurrentPair([minIndex, j]);
                 await delay(speed); // Slow down the sorting
+                setIterationCount(prev => prev + 1);
 
                 if (newArr[j] < newArr[minIndex]) {
                     minIndex = j;
@@ -184,6 +197,7 @@ export default function SortingAlgorithms() {
             if (minIndex !== i) {
                 [newArr[i], newArr[minIndex]] = [newArr[minIndex], newArr[i]];
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
             }
             setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
             await delay(500);
@@ -193,6 +207,7 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+    //bingo sort
     const bingoSort = async (arr: number[]) => {
         const newArr = [...arr];
         const max = Math.max(...newArr);
@@ -203,6 +218,7 @@ export default function SortingAlgorithms() {
         // Mark each number in the sorted array
         for (const num of newArr) {
             sorted[num + offset] = true; // Adjust index for negative numbers
+            setIterationCount(prev => prev + 1);
         }
 
         const result: number[] = [];
@@ -214,6 +230,7 @@ export default function SortingAlgorithms() {
                 setArray([...result]); // Update displayed array with the current state of sorted results
                 setCurrentPair([result.length - 1, i - offset]); // Highlight the last collected number
                 await delay(speed); // Slow down the visualization
+                setIterationCount(prev => prev + 1);
             }
         }
 
@@ -223,6 +240,7 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+    //bucket Sort
     const bucketSort = async (arr: number[]) => {
         const newArr = arr.map(Math.floor); // Ensure all numbers are integers
         const max = Math.max(...newArr);
@@ -233,6 +251,7 @@ export default function SortingAlgorithms() {
         newArr.forEach(num => {
             const bucketIndex = Math.floor(num); // No need for min adjustment
             buckets[bucketIndex].push(num);
+            setIterationCount(prev => prev + 1);
         });
 
         const result: number[] = []; // Store the sorted result
@@ -246,6 +265,7 @@ export default function SortingAlgorithms() {
                     setArray([...result]); // Update the displayed array
                     setCurrentPair([bucket.indexOf(num), num]);
                     await delay(speed);
+                    setIterationCount(prev => prev + 1);
                 }
             }
         }
@@ -264,6 +284,7 @@ export default function SortingAlgorithms() {
         // Count each number's occurrences
         for (const num of newArr) {
             count[num]++;
+            setIterationCount(prev => prev + 1);
         }
 
         // Build the sorted array
@@ -273,6 +294,7 @@ export default function SortingAlgorithms() {
                 setArray([...result]); // Update the displayed array
                 setCurrentPair([result.length - 1, i]);
                 await delay(speed); // Slow down the visualization
+                setIterationCount(prev => prev + 1);
                 count[i]--;
             }
         }
@@ -282,6 +304,7 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+    //heap sort
     const heapSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
@@ -301,7 +324,9 @@ export default function SortingAlgorithms() {
             if (largest !== i) {
                 [arr[i], arr[largest]] = [arr[largest], arr[i]];
                 setArray([...arr]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
+
                 await heapify(arr, n, largest);
             }
         };
@@ -313,6 +338,7 @@ export default function SortingAlgorithms() {
         for (let i = n - 1; i > 0; i--) {
             [newArr[0], newArr[i]] = [newArr[i], newArr[0]];
             setArray([...newArr]);
+            setIterationCount(prev => prev + 1);
             setSortedIndex((prev) => [...prev, i]);
             await delay(speed);
             await heapify(newArr, i, 0);
@@ -337,6 +363,7 @@ export default function SortingAlgorithms() {
                     result.push(right.shift()!);
                 }
                 setArray([...result, ...left, ...right]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
             }
             return result;
@@ -378,6 +405,7 @@ export default function SortingAlgorithms() {
 
             for (let j = low; j < high; j++) {
                 setCurrentPair([i + 1, j]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
                 if (arr[j] < pivot) {
                     i++;
@@ -429,6 +457,7 @@ export default function SortingAlgorithms() {
             output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
             count[Math.floor(arr[i] / exp) % 10]--;
             setArray([...output]); // Update the displayed array
+            setIterationCount(prev => prev + 1);
             await delay(speed);
         }
 
@@ -453,10 +482,12 @@ export default function SortingAlgorithms() {
                     await delay(speed); // Delay for visualization
                     newArr[j] = newArr[j - gap]; // Move the element
                     setArray([...newArr]); // Update the displayed array
+                    setIterationCount(prev => prev + 1);
                     j -= gap;
                 }
                 newArr[j] = temp; // Place the temp in its correct position
                 setArray([...newArr]); // Update the displayed array
+                setIterationCount(prev => prev + 1);
             }
 
             // Decrease the gap
@@ -481,6 +512,7 @@ export default function SortingAlgorithms() {
                 let j = i - 1;
                 while (j >= left && subArr[j] > key) {
                     setCurrentPair([j, j + 1]);
+                    setIterationCount(prev => prev + 1);
                     await delay(speed);
                     subArr[j + 1] = subArr[j];
                     j--;
@@ -505,15 +537,18 @@ export default function SortingAlgorithms() {
                     newArr[k++] = rightArr[j++];
                 }
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
             }
             while (i < leftArr.length) {
                 newArr[k++] = leftArr[i++];
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
             }
             while (j < rightArr.length) {
                 newArr[k++] = rightArr[j++];
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
             }
         };
@@ -537,42 +572,64 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
-
-    // Bitonic Sort
+    //Bitonic Sort
     const bitonicSort = async (arr: number[]) => {
         const newArr = [...arr];
-
-        const bitonicMerge = async (low: number, cnt: number, dir: boolean) => {
+    
+        // Utility function for swapping based on direction
+        const compAndSwap = async (a: number[], i: number, j: number, dir: boolean) => {
+            setCurrentPair([i, j]);
+            setIterationCount((prev) => prev + 1); // Increment iteration count
+            await delay(speed);
+    
+            // Swap based on the direction (true for ascending, false for descending)
+            if ((dir && a[i] > a[j]) || (!dir && a[i] < a[j])) {
+                [a[i], a[j]] = [a[j], a[i]]; // Swap elements
+                setArray([...a]); // Update array state for visualization
+            }
+        };
+    
+        // Recursively merges the bitonic sequence
+        const bitonicMerge = async (a: number[], low: number, cnt: number, dir: boolean) => {
             if (cnt > 1) {
                 const k = Math.floor(cnt / 2);
+    
+                // Perform the comparison and swap in the first half of the sequence
                 for (let i = low; i < low + k; i++) {
-                    setCurrentPair([i, i + k]);
-                    await delay(speed);
-                    if (dir === (newArr[i] > newArr[i + k])) {
-                        [newArr[i], newArr[i + k]] = [newArr[i + k], newArr[i]];
-                        setArray([...newArr]);
-                    }
+                    await compAndSwap(a, i, i + k, dir);
                 }
-                await bitonicMerge(low, k, dir);
-                await bitonicMerge(low + k, k, dir);
+    
+                // Recursively merge both halves
+                await bitonicMerge(a, low, k, dir);
+                await bitonicMerge(a, low + k, k, dir);
             }
         };
-
-        const bitonicSortHelper = async (low: number, cnt: number, dir: boolean) => {
+    
+        // Recursively sorts a bitonic sequence in ascending (dir = true) or descending (dir = false) order
+        const bitonicSortHelper = async (a: number[], low: number, cnt: number, dir: boolean) => {
             if (cnt > 1) {
                 const k = Math.floor(cnt / 2);
-                await bitonicSortHelper(low, k, true); // Sort in ascending order
-                await bitonicSortHelper(low + k, k, false); // Sort in descending order
-                await bitonicMerge(low, cnt, dir); // Merge the whole sequence
+    
+                // Sort the first half in ascending order (dir = true)
+                await bitonicSortHelper(a, low, k, true);
+    
+                // Sort the second half in descending order (dir = false)
+                await bitonicSortHelper(a, low + k, k, false);
+    
+                // Merge the two halves in the specified direction
+                await bitonicMerge(a, low, cnt, dir);
             }
         };
-
-        await bitonicSortHelper(0, newArr.length, true);
-        setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
+    
+        // Start the Bitonic Sort process
+        await bitonicSortHelper(newArr, 0, newArr.length, true);
+    
+        // Mark all elements as sorted
+        setSortedIndex([...Array(newArr.length).keys()]);
         setCurrentPair(null);
         setSorting(false);
     };
-
+    
     // Cycle Sort
     const cycleSort = async (arr: number[]) => {
         const newArr = [...arr];
@@ -599,6 +656,7 @@ export default function SortingAlgorithms() {
             if (pos !== cycleStart) {
                 [newArr[pos], item] = [item, newArr[pos]];
                 setArray([...newArr]);
+                setIterationCount(prev => prev + 1);
                 await delay(speed);
             }
 
@@ -618,6 +676,7 @@ export default function SortingAlgorithms() {
                 if (item !== newArr[pos]) {
                     [newArr[pos], item] = [item, newArr[pos]];
                     setArray([...newArr]);
+                    setIterationCount(prev => prev + 1);
                     await delay(speed);
                 }
             }
@@ -647,7 +706,8 @@ export default function SortingAlgorithms() {
                 newArr.push(i + min);
                 holes[i]--;
                 setArray([...newArr]);
-                await delay(1000);
+                setIterationCount(prev => prev + 1);
+                await delay(speed);
             }
         }
 
@@ -672,7 +732,8 @@ export default function SortingAlgorithms() {
                 if (newArr[i] > newArr[i + gap]) {
                     [newArr[i], newArr[i + gap]] = [newArr[i + gap], newArr[i]];
                     setArray([...newArr]);
-                    await delay(1000);
+                    setIterationCount(prev => prev + 1);
+                    await delay(speed);
                     swapped = true;
                 }
             }
@@ -695,7 +756,8 @@ export default function SortingAlgorithms() {
             } else {
                 const pivotIndex = await partition(newArr, start, end);
                 setArray([...newArr]); // Update state to visualize
-                await delay(1000); // Delay for visualization
+                setIterationCount(prev => prev + 1);
+                await delay(speed); // Delay for visualization
 
                 await sort(start, pivotIndex, depth - 1); // Sort left partition
                 await sort(pivotIndex + 1, end, depth - 1); // Sort right partition
@@ -729,7 +791,8 @@ export default function SortingAlgorithms() {
             if (largest !== i) {
                 [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
                 setArray([...arr]); // Update state to visualize
-                await delay(1000); // Delay for visualization
+                setIterationCount(prev => prev + 1);
+                await delay(speed); // Delay for visualization
 
                 // Recursively heapify the affected sub-tree
                 await heapify(n, largest);
@@ -745,7 +808,8 @@ export default function SortingAlgorithms() {
         for (let i = end - 1; i > start; i--) {
             [arr[start], arr[i]] = [arr[i], arr[start]]; // Move current root to end
             setArray([...arr]); // Update state to visualize
-            await delay(1000); // Delay for visualization
+            setIterationCount(prev => prev + 1);
+            await delay(speed); // Delay for visualization
 
             await heapify(i, start); // Call max heapify on the reduced heap
         }
@@ -768,7 +832,6 @@ export default function SortingAlgorithms() {
         return i + 1;
     };
 
-
     //3 way merge sort
     const mergeSort3Way = async (arr: number[]) => {
         const newArr = [...arr];
@@ -776,23 +839,28 @@ export default function SortingAlgorithms() {
         const sort = async (start: number, end: number) => {
             if (end - start < 2) return;
 
-            const mid1 = Math.floor(start + (end - start) / 3);
-            const mid2 = Math.floor(start + 2 * (end - start) / 3);
+            setIterationCount(prev => prev + 1);
 
+            // Find midpoints for 3-way partition
+            const mid1 = start + Math.floor((end - start) / 3);
+            const mid2 = start + 2 * Math.floor((end - start) / 3) + 1;
+
+            // Recursively sort the three subarrays
             await sort(start, mid1);
             await sort(mid1, mid2);
             await sort(mid2, end);
 
+            // Merge the three sorted subarrays
             await merge(newArr, start, mid1, mid2, end);
         };
 
         await sort(0, newArr.length);
-        setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
+        setSortedIndex([...Array(newArr.length).keys()]); // Mark all elements as sorted
         setCurrentPair(null);
         setSorting(false);
     };
 
-    // Helper function to merge the subarrays
+    // Helper function to merge three sorted subarrays
     const merge = async (arr: number[], start: number, mid1: number, mid2: number, end: number) => {
         const left = arr.slice(start, mid1);
         const middle = arr.slice(mid1, mid2);
@@ -800,6 +868,7 @@ export default function SortingAlgorithms() {
 
         let i = 0, j = 0, k = 0, index = start;
 
+        // Merge elements from three arrays into original array
         while (i < left.length && j < middle.length && k < right.length) {
             if (left[i] <= middle[j] && left[i] <= right[k]) {
                 arr[index++] = left[i++];
@@ -809,26 +878,100 @@ export default function SortingAlgorithms() {
                 arr[index++] = right[k++];
             }
             setArray([...arr]);
-            await delay(1000);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);  // Visualization delay
         }
 
+        // Merge remaining elements of two arrays
+        while (i < left.length && j < middle.length) {
+            if (left[i] <= middle[j]) {
+                arr[index++] = left[i++];
+            } else {
+                arr[index++] = middle[j++];
+            }
+            setArray([...arr]);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);
+        }
+
+        while (j < middle.length && k < right.length) {
+            if (middle[j] <= right[k]) {
+                arr[index++] = middle[j++];
+            } else {
+                arr[index++] = right[k++];
+            }
+            setArray([...arr]);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);
+        }
+
+        while (i < left.length && k < right.length) {
+            if (left[i] <= right[k]) {
+                arr[index++] = left[i++];
+            } else {
+                arr[index++] = right[k++];
+            }
+            setArray([...arr]);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);
+        }
+
+        // Merge remaining elements of individual arrays
         while (i < left.length) {
             arr[index++] = left[i++];
             setArray([...arr]);
-            await delay(1000);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);
         }
 
         while (j < middle.length) {
             arr[index++] = middle[j++];
             setArray([...arr]);
-            await delay(1000);
+            setIterationCount(prev => prev + 1);
+            await delay(speed);
         }
 
         while (k < right.length) {
             arr[index++] = right[k++];
             setArray([...arr]);
+            setIterationCount(prev => prev + 1);
             await delay(1000);
         }
+    };
+
+    // Bogo Sort
+
+    // Utility function to check if the array is sorted
+    const isSorted = (arr: number[]) => {
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] > arr[i + 1]) return false;
+        }
+        return true;
+    };
+
+    // Utility function to shuffle the array randomly
+    const shuffleArray = (arr: number[]) => {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    };
+
+    const bogoSort = async (arr: number[]) => {
+        const newArr = [...arr];
+        setSpeed(0);
+        // Keep shuffling until the array is sorted
+        while (!isSorted(newArr)) {
+            shuffleArray(newArr);
+            setArray([...newArr]);  // Update the array for visualization
+            setIterationCount(prev => prev + 1);
+            await delay(speed);  // Delay to visualize each shuffle
+        }
+
+        // Once sorted, mark all as sorted
+        setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
+        setCurrentPair(null);  // Clear current pair highlight
+        setSorting(false);  // Indicate sorting is done
     };
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -846,7 +989,15 @@ export default function SortingAlgorithms() {
                 <select
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
                     value={selectedAlgorithm}
-                    onChange={(e) => setSelectedAlgorithm(e.target.value)}
+                    onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        setSelectedAlgorithm(selectedValue);
+
+                        // Automatically set speed to "instant" if Bogo Sort is selected
+                        if (selectedValue === "Bogo Sort") {
+                            setSpeed(0); // Assuming "instant" speed is represented by 0
+                        }
+                    }}
                 >
                     {sortingOptions.map((algorithm) => (
                         <option key={algorithm} value={algorithm}>
@@ -874,8 +1025,18 @@ export default function SortingAlgorithms() {
                         Note: Traditional {selectedAlgorithm} does not support negative numbers or decimal values.
                     </p>
                 )}
-
+                {(selectedAlgorithm === "Bogo Sort") && (
+                    <p className="text-sm text-red-500 mb-4">
+                        Note: {selectedAlgorithm} is an unpredictable sorting algorithm.
+                    </p>
+                )}
                 <h3 className="text-lg font-semibold mb-2">Input Array</h3>
+                {(selectedAlgorithm === "Bitonic Sort") && (
+                    <p className="text-sm text-red-500 mb-4">
+                        Note: {selectedAlgorithm} works only when size of input is a power of 2.
+                    </p>
+                )}
+
                 <input
                     type="text"
                     value={arrayInput}
@@ -886,6 +1047,7 @@ export default function SortingAlgorithms() {
 
                 <button
                     onClick={() => {
+                        setIterationCount(0);
                         handleArrayInput();
                         setSorting(true);
                     }}
@@ -908,6 +1070,7 @@ export default function SortingAlgorithms() {
                             <h2 className="text-xl font-bold mb-4 text-[#F5F5F5]">
                                 {selectedAlgorithm} Visualization
                             </h2>
+                            <p className="text-lg text-[#F5F5F5] mb-4">Iterations: {iterationCount}</p>
                             <div className="flex flex-col items-center">
                                 <div className="flex justify-center mb-4">
                                     {/* Display original array */}
