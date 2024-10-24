@@ -1083,10 +1083,10 @@ export default function SortingAlgorithms() {
         <div className="flex flex-col lg:flex-row min-h-screen bg-[#121212] text-[#E0E0E0]">
             {/* Left Pane: Fixed Size */}
             <motion.div
-                className="lg:w-1/4 w-full p-6 bg-[#1F1F1F] shadow-lg border-b lg:border-b-0 lg:border-r border-gray-700 lg:sticky lg:top-0 lg:h-screen overflow-hidden"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+                className="lg:w-1/4 w-full p-6 bg-[#1F1F1F] shadow-lg border-b lg:border-b-0 lg:border-r border-gray-700 lg:sticky lg:top-0 lg:h-screen"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }} // Changed easing and adjusted duration
             >
                 <h2 className="text-2xl font-bold mb-6 text-[#F5F5F5]">Sorting Algorithms</h2>
 
@@ -1167,9 +1167,9 @@ export default function SortingAlgorithms() {
 
             <motion.div
                 className="w-full lg:w-3/4 p-6 bg-[#121212] overflow-y-auto rounded-lg shadow-lg"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }} // Changed easing and adjusted duration
             >
                 <div className="flex flex-col items-start justify-center bg-[#1F1F1F] p-4 sm:p-8 rounded-lg">
                     {array.length > 0 ? (
