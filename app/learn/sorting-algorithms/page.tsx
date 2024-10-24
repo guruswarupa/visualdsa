@@ -3,6 +3,8 @@
 import { ArrowUpIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github.css';
 
 const bucketColors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A1", "#33FFF3"];
 
@@ -35,6 +37,13 @@ const speedOptions = [
     { label: 'Instant', value: 0 }, //immediate
 ];
 
+interface CodeFiles {
+    c: string | null;
+    java: string | null;
+    python: string | null;
+    javascript: string | null;
+}
+
 export default function SortingAlgorithms() {
     const [selectedAlgorithm, setSelectedAlgorithm] = useState("Bubble Sort");
     const [arrayInput, setArrayInput] = useState<string>("");
@@ -45,28 +54,87 @@ export default function SortingAlgorithms() {
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
     const [speed, setSpeed] = useState(1000); // Default speed 1s
     const [iterationCount, setIterationCount] = useState(0); // State to track number of iterations
-    const [advantages, setAdvantages] = useState([]);
-    const [disadvantages, setDisadvantages] = useState([]);
+    const [advantages, setAdvantages] = useState<string[]>([]);
+    const [disadvantages, setDisadvantages] = useState<string[]>([]);
+    const [algorithmImage, setAlgorithmImage] = useState<string | null>(null);
+    const [codeFiles, setCodeFiles] = useState<CodeFiles>({
+        c: null,
+        java: null,
+        python: null,
+        javascript: null
+    });
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('c'); // Default selected language
 
     useEffect(() => {
         const fetchAlgorithmData = async () => {
-            const response = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/info.json`);
-            if (response.ok) {
-                const data = await response.json();
-                setAdvantages(data.advantages);
-                setDisadvantages(data.disadvantages);
-            } else {
-                console.error('Failed to fetch algorithm data');
+            try {
+                const response = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/info.json`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setAdvantages(data.advantages);
+                    setDisadvantages(data.disadvantages);
+
+                    const imageResponse = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}.png`);
+                    if (imageResponse.ok) {
+                        const imageBlob = await imageResponse.blob();
+                        setAlgorithmImage(URL.createObjectURL(imageBlob));
+                    }
+
+                    const languages = ["c", "java", "py", "js"];
+                    const codeData: CodeFiles = { c: null, java: null, python: null, javascript: null };
+                    for (const lang of languages) {
+                        const codeResponse = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/code.${lang}`);
+                        if (codeResponse.ok) {
+                            const codeText = await codeResponse.text();
+                            switch (lang) {
+                                case 'c':
+                                    codeData.c = codeText;
+                                    break;
+                                case 'java':
+                                    codeData.java = codeText;
+                                    break;
+                                case 'py':
+                                    codeData.python = codeText;
+                                    break;
+                                case 'js':
+                                    codeData.javascript = codeText;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    setCodeFiles(codeData);
+                } else {
+                    console.error('Failed to fetch algorithm info.json');
+                }
+            } catch (error) {
+                console.error('Error fetching algorithm data:', error);
             }
         };
 
         fetchAlgorithmData();
     }, [selectedAlgorithm]);
 
+    // Function to copy code to clipboard
+    const copyToClipboard = () => {
+        const code = codeFiles[selectedLanguage as keyof CodeFiles]; // Get the code for the selected language
+        if (code) {
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Code copied to clipboard!');
+            });
+        }
+    };
+
+    // Handle language selection
+    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedLanguage(e.target.value);
+    };
+
     const handleArrayInput = () => {
         const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
         setArray(numbers);
-        setOriginalArray(numbers); // Store original array
+        setOriginalArray(numbers); // Store o   riginal array
         setSorting(false);
         setSortedIndex([]);
         setCurrentPair(null);
@@ -993,6 +1061,7 @@ export default function SortingAlgorithms() {
     };
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
     return (
         <div className="flex flex-col min-h-screen bg-[#121212] text-[#E0E0E0] lg:flex-row">
             <motion.div
@@ -1009,7 +1078,7 @@ export default function SortingAlgorithms() {
                     onChange={(e) => {
                         const selectedValue = e.target.value;
                         setSelectedAlgorithm(selectedValue);
-    
+
                         // Automatically set speed to "instant" if Bogo Sort is selected
                         if (selectedValue === "Bogo Sort") {
                             setSpeed(0); // Instant speed for Bogo Sort
@@ -1022,7 +1091,7 @@ export default function SortingAlgorithms() {
                         </option>
                     ))}
                 </select>
-    
+
                 <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Speed:</label>
                 <select
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
@@ -1035,7 +1104,7 @@ export default function SortingAlgorithms() {
                         </option>
                     ))}
                 </select>
-    
+
                 {(selectedAlgorithm === "Bucket Sort" || selectedAlgorithm === "Radix Sort" || selectedAlgorithm === "Counting Sort") && (
                     <p className="text-sm text-red-500 mb-4">
                         Note: Traditional {selectedAlgorithm} does not support negative numbers or decimal values.
@@ -1051,7 +1120,7 @@ export default function SortingAlgorithms() {
                         Note: {selectedAlgorithm} works only when the size of the input is a power of 2.
                     </p>
                 )}
-    
+
                 <h3 className="text-lg font-semibold mb-2">Input Array</h3>
                 <input
                     type="text"
@@ -1060,7 +1129,7 @@ export default function SortingAlgorithms() {
                     placeholder="Enter numbers separated by commas"
                     className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
                 />
-    
+
                 <button
                     onClick={() => {
                         setIterationCount(0);
@@ -1073,21 +1142,21 @@ export default function SortingAlgorithms() {
                     Visualize Sorting
                 </button>
             </motion.div>
-    
+
             <motion.div
                 className="w-full lg:w-3/4 p-6 bg-[#121212] overflow-y-auto rounded-lg shadow-lg"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
             >
-                <div className="flex flex-col items-center justify-center bg-[#1F1F1F] p-4 sm:p-8 rounded-lg">
+                <div className="flex flex-col items-start justify-center bg-[#1F1F1F] p-4 sm:p-8 rounded-lg">
                     {array.length > 0 ? (
-                        <div className="text-center w-full">
+                        <div className="text-left w-full">
                             <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#F5F5F5]">
                                 {selectedAlgorithm} Visualization
                             </h2>
                             <p className="text-base sm:text-lg text-[#F5F5F5] mb-4">Iterations: {iterationCount}</p>
-                            <div className="flex flex-col items-center">
+                            <div className="flex flex-col items-center mb-4">
                                 <div className="flex justify-center mb-4">
                                     {/* Original Array */}
                                     {originalArray.map((num, index) => (
@@ -1102,14 +1171,14 @@ export default function SortingAlgorithms() {
                                         </motion.div>
                                     ))}
                                 </div>
-    
+
                                 <div className="flex justify-center">
                                     {/* Sorted Array */}
                                     {array.map((num, index) => (
                                         <motion.div
                                             key={index}
                                             className={`${sortedIndex.includes(index) ? "bg-green-500" : "bg-red-600"} 
-                                            text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1 relative`}
+                                text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1 relative`}
                                             initial={{ opacity: 0, scale: 0.5 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -1129,16 +1198,16 @@ export default function SortingAlgorithms() {
                                     ))}
                                 </div>
                             </div>
-    
+
                             {/* Buckets for Bucket Sort */}
                             {selectedAlgorithm === "Bucket Sort" && (
                                 <>
                                     <h2 className="text-lg sm:text-xl font-bold mt-4 text-[#F5F5F5]">Buckets</h2>
-                                    <div className="flex justify-center">
+                                    <div className="flex justify-center mb-4">
                                         {array.length > 0 && (
                                             <div className="flex flex-col gap-2">
                                                 {array.map((num, index) => (
-                                                    <div key={`bucket-${index}`} className="flex items-center justify-center">
+                                                    <div key={`bucket-${index}`} className="flex items-center">
                                                         <div
                                                             className="w-4 h-4 rounded-full"
                                                             style={{
@@ -1153,6 +1222,7 @@ export default function SortingAlgorithms() {
                                     </div>
                                 </>
                             )}
+
                             <div className="my-8 p-4 bg-[#1F1F1F] rounded-lg shadow-md">
                                 <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Advantages</h3>
                                 <ul className="list-disc list-inside mb-4 p-2">
@@ -1160,7 +1230,7 @@ export default function SortingAlgorithms() {
                                         <li key={index} className="text-[#E0E0E0] mb-2">{adv}</li>
                                     ))}
                                 </ul>
-    
+
                                 <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Disadvantages</h3>
                                 <ul className="list-disc list-inside mb-4 p-2">
                                     {disadvantages.map((dis, index) => (
@@ -1168,12 +1238,50 @@ export default function SortingAlgorithms() {
                                     ))}
                                 </ul>
                             </div>
+
+                            {/* Display Image with margin */}
+                            {algorithmImage && (
+                                <img
+                                    src={algorithmImage}
+                                    alt={`${selectedAlgorithm} Illustration`}
+                                    className="my-4 max-w-full block"
+                                />
+                            )}
+
+                            {/* Language Dropdown */}
+                            <label htmlFor="languageSelect" className="block mt-4 text-[#F5F5F5]">Select Language:</label>
+                            <select
+                                id="languageSelect"
+                                value={selectedLanguage}
+                                onChange={handleLanguageChange}
+                                className="mt-2 mb-4 p-2 border bg-gray-800 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            >
+                                <option value="c">C</option>
+                                <option value="java">Java</option>
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                            </select>
+
+                            {/* Display Code Snippet for selected language */}
+                            {codeFiles[selectedLanguage as keyof CodeFiles] && (
+                                <div className="text-left">
+                                    <pre className="bg-gray-800 p-4 rounded overflow-x-auto">
+                                        <code>{codeFiles[selectedLanguage as keyof CodeFiles]}</code>
+                                    </pre>
+                                    <button
+                                        onClick={copyToClipboard}
+                                        className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                                    >
+                                        Copy Code
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <h3 className="text-base sm:text-lg text-[#E0E0E0]">Enter an array to visualize the sorting algorithm.</h3>
                     )}
                 </div>
             </motion.div>
-        </div>
-    );      
+        </div >
+    );
 }
