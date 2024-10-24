@@ -8,7 +8,6 @@
     "Inefficient for large datasets with a time complexity of O(n^2).",
     "Not suitable for large lists due to its poor performance compared to more advanced algorithms like quicksort or mergesort.",
     "The performance does not improve significantly with optimizations compared to other algorithms."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript"]
+    ]
 }
   

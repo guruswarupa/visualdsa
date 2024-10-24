@@ -11,6 +11,5 @@
         "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
         "Slower compared to advanced sorting algorithms for larger or random data.",
         "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript"]
+    ]
 }
