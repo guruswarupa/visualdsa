@@ -42,6 +42,12 @@ interface CodeFiles {
     java: string | null;
     python: string | null;
     javascript: string | null;
+    typescript: string | null;
+    csharp: string | null;
+    cplusplus: string | null;
+    rust: string | null;
+    ruby: string | null;
+    lua: string | null;
 }
 
 export default function SortingAlgorithms() {
@@ -61,7 +67,13 @@ export default function SortingAlgorithms() {
         c: null,
         java: null,
         python: null,
-        javascript: null
+        javascript: null,
+        typescript: null,
+        csharp: null,
+        cplusplus: null,
+        rust: null,
+        ruby: null,
+        lua: null
     });
     const [selectedLanguage, setSelectedLanguage] = useState<string>('');
     const codeBlockRef = useRef<HTMLElement | null>(null); // Reference to the code block
@@ -81,8 +93,8 @@ export default function SortingAlgorithms() {
                         setAlgorithmImage(URL.createObjectURL(imageBlob));
                     }
 
-                    const languages = ["c", "java", "py", "js"];
-                    const codeData: CodeFiles = { c: null, java: null, python: null, javascript: null };
+                    const languages = ["c", "java", "py", "js", "ts", "cs", "cpp", "rs", "rb", "lua"];
+                    const codeData: CodeFiles = { c: null, java: null, python: null, javascript: null, typescript: null, csharp: null, cplusplus: null, rust: null, ruby: null, lua: null };
                     for (const lang of languages) {
                         const codeResponse = await fetch(`/sorting-algorithms/${selectedAlgorithm.toLowerCase().replace(/\s+/g, '')}/code.${lang}`);
                         if (codeResponse.ok) {
@@ -99,6 +111,24 @@ export default function SortingAlgorithms() {
                                     break;
                                 case 'js':
                                     codeData.javascript = codeText;
+                                    break;
+                                case 'ts':
+                                    codeData.typescript = codeText;
+                                    break;
+                                case 'cs':
+                                    codeData.csharp = codeText;
+                                    break;
+                                case 'cpp':
+                                    codeData.cplusplus = codeText;
+                                    break;
+                                case 'rs':
+                                    codeData.rust = codeText;
+                                    break;
+                                case 'rb':
+                                    codeData.ruby = codeText;
+                                    break;
+                                case 'lua':
+                                    codeData.lua = codeText;
                                     break;
                                 default:
                                     break;
@@ -1281,9 +1311,15 @@ export default function SortingAlgorithms() {
                             >
                                 <option>Select</option>
                                 <option value="c">C</option>
+                                <option value="cplusplus">C++</option>
                                 <option value="java">Java</option>
                                 <option value="python">Python</option>
                                 <option value="javascript">JavaScript</option>
+                                <option value="typescript">TypeScript</option>
+                                <option value="csharp">C#</option>
+                                <option value="rust">Rust</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="lua">Lua</option>
                             </select>
 
                             {/* Display Code Snippet for selected language */}
