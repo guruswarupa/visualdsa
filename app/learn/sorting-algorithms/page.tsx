@@ -3,8 +3,6 @@
 import { ArrowUpIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
 
 const bucketColors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A1", "#33FFF3"];
 
