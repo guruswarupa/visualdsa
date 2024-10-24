@@ -1,9 +1,10 @@
 "use client";
 import { ArrowUpIcon } from "@heroicons/react/24/solid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
+import { Toaster, toast } from 'sonner';
 
 const bucketColors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A1", "#33FFF3"];
 
@@ -62,7 +63,8 @@ export default function SortingAlgorithms() {
         python: null,
         javascript: null
     });
-    const [selectedLanguage, setSelectedLanguage] = useState<string>('c');
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('');
+    const codeBlockRef = useRef<HTMLElement | null>(null); // Reference to the code block
 
     useEffect(() => {
         const fetchAlgorithmData = async () => {
@@ -115,34 +117,36 @@ export default function SortingAlgorithms() {
         fetchAlgorithmData();
     }, [selectedAlgorithm]);
 
-    // Re-run syntax highlighting when selectedAlgorithm, selectedLanguage, or codeFiles changes
     useEffect(() => {
-        // Remove previous highlighting attribute from all code elements
-        const codeBlocks = document.querySelectorAll('code');
-        codeBlocks.forEach((block) => {
-            block.removeAttribute('data-highlighted');
-        });
+        if (codeBlockRef.current) {
+            // Unset 'data-highlighted' attribute if previously set
+            if (codeBlockRef.current.getAttribute('data-highlighted') === 'yes') {
+                codeBlockRef.current.removeAttribute('data-highlighted');
+            }
 
-        // Apply new syntax highlighting
-        hljs.highlightAll();
-    }, [selectedAlgorithm, selectedLanguage, codeFiles]);
+            // Apply new highlighting
+            hljs.highlightElement(codeBlockRef.current);
 
+            // Set 'data-highlighted' to mark it as highlighted
+            codeBlockRef.current.setAttribute('data-highlighted', 'yes');
+        }
+    }, [codeFiles, selectedLanguage]);
 
     // Function to copy code to clipboard
     const copyToClipboard = () => {
         const code = codeFiles[selectedLanguage as keyof CodeFiles]; // Get the code for the selected language
         if (code) {
             navigator.clipboard.writeText(code).then(() => {
-                alert('Code copied to clipboard!');
+                toast('Code copied to clipboard!');
             });
         }
     };
 
     // Handle language selection
     const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newLanguage = e.target.value;
-        setSelectedLanguage(newLanguage);
+        setSelectedLanguage(e.target.value);
     };
+
 
     const handleArrayInput = () => {
         const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
@@ -1076,84 +1080,89 @@ export default function SortingAlgorithms() {
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#121212] text-[#E0E0E0] lg:flex-row">
+        <div className="flex flex-col lg:flex-row min-h-screen bg-[#121212] text-[#E0E0E0]">
+            {/* Left Pane: Fixed Size */}
             <motion.div
-                className="w-full lg:w-1/4 p-6 bg-[#1F1F1F] border-b lg:border-b-0 lg:border-r border-gray-700 shadow-lg"
+                className="lg:w-1/4 w-full p-6 bg-[#1F1F1F] shadow-lg border-b lg:border-b-0 lg:border-r border-gray-700 lg:sticky lg:top-0 lg:h-screen overflow-hidden"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
             >
-                <h2 className="text-xl sm:text-2xl font-bold mb-4 text-[#F5F5F5]">Sorting Algorithms</h2>
-                <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Algorithm:</label>
-                <select
-                    className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
-                    value={selectedAlgorithm}
-                    onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        setSelectedAlgorithm(selectedValue);
+                <h2 className="text-2xl font-bold mb-6 text-[#F5F5F5]">Sorting Algorithms</h2>
 
-                        // Automatically set speed to "instant" if Bogo Sort is selected
-                        if (selectedValue === "Bogo Sort") {
-                            setSpeed(0); // Instant speed for Bogo Sort
-                        }
-                    }}
-                >
-                    {sortingOptions.map((algorithm) => (
-                        <option key={algorithm} value={algorithm}>
-                            {algorithm}
-                        </option>
-                    ))}
-                </select>
+                <div className="space-y-6">
+                    {/* Algorithm Selection */}
+                    <div>
+                        <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Algorithm:</label>
+                        <select
+                            className="w-full p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
+                            value={selectedAlgorithm}
+                            onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                setSelectedAlgorithm(selectedValue);
+                                if (selectedValue === "Bogo Sort") setSpeed(0); // Instant for Bogo Sort
+                            }}
+                        >
+                            {sortingOptions.map((algorithm) => (
+                                <option key={algorithm} value={algorithm}>
+                                    {algorithm}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Speed:</label>
-                <select
-                    className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
-                    value={speed}
-                    onChange={(e) => setSpeed(Number(e.target.value))}
-                >
-                    {speedOptions.map(option => (
-                        <option key={option.label} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </select>
+                    {/* Speed Selection */}
+                    <div>
+                        <label className="block mb-2 text-sm text-[#F5F5F5]">Select Sorting Speed:</label>
+                        <select
+                            className="w-full p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
+                            value={speed}
+                            onChange={(e) => setSpeed(Number(e.target.value))}
+                        >
+                            {speedOptions.map((option) => (
+                                <option key={option.label} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                {(selectedAlgorithm === "Bucket Sort" || selectedAlgorithm === "Radix Sort" || selectedAlgorithm === "Counting Sort") && (
-                    <p className="text-sm text-red-500 mb-4">
-                        Note: Traditional {selectedAlgorithm} does not support negative numbers or decimal values.
-                    </p>
-                )}
-                {selectedAlgorithm === "Bogo Sort" && (
-                    <p className="text-sm text-red-500 mb-4">
-                        Note: {selectedAlgorithm} is an unpredictable sorting algorithm.
-                    </p>
-                )}
-                {selectedAlgorithm === "Bitonic Sort" && (
-                    <p className="text-sm text-red-500 mb-4">
-                        Note: {selectedAlgorithm} works only when the size of the input is a power of 2.
-                    </p>
-                )}
+                    {/* Warnings */}
+                    {(selectedAlgorithm === "Bucket Sort" || selectedAlgorithm === "Radix Sort" || selectedAlgorithm === "Counting Sort") && (
+                        <p className="text-sm text-red-500">Note: {selectedAlgorithm} does not support negative numbers or decimals.</p>
+                    )}
+                    {selectedAlgorithm === "Bogo Sort" && (
+                        <p className="text-sm text-red-500">Note: Bogo Sort is unpredictable.</p>
+                    )}
+                    {selectedAlgorithm === "Bitonic Sort" && (
+                        <p className="text-sm text-red-500">Note: Bitonic Sort works only with inputs of size power of 2.</p>
+                    )}
 
-                <h3 className="text-lg font-semibold mb-2">Input Array</h3>
-                <input
-                    type="text"
-                    value={arrayInput}
-                    onChange={(e) => setArrayInput(e.target.value)}
-                    placeholder="Enter numbers separated by commas"
-                    className="w-full mb-4 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
-                />
+                    {/* Input Array */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-[#F5F5F5]">Input Array</h3>
+                        <input
+                            type="text"
+                            value={arrayInput}
+                            onChange={(e) => setArrayInput(e.target.value)}
+                            placeholder="Enter numbers separated by commas"
+                            className="w-full mt-2 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
+                        />
+                    </div>
 
-                <button
-                    onClick={() => {
-                        setIterationCount(0);
-                        handleArrayInput();
-                        setSorting(true);
-                    }}
-                    className="bg-[#E62B1E] hover:bg-[#C6261A] text-white py-2 px-4 rounded-md transition w-full"
-                    disabled={sorting}
-                >
-                    Visualize Sorting
-                </button>
+                    {/* Visualize Button */}
+                    <button
+                        onClick={() => {
+                            setIterationCount(0);
+                            handleArrayInput();
+                            setSorting(true);
+                        }}
+                        className="w-full py-2 px-4 bg-[#E62B1E] hover:bg-[#C6261A] text-white rounded-md transition duration-300 ease-in-out disabled:bg-[#383838]"
+                        disabled={sorting}
+                    >
+                        Visualize Sorting
+                    </button>
+                </div>
             </motion.div>
 
             <motion.div
@@ -1252,23 +1261,25 @@ export default function SortingAlgorithms() {
                                 </ul>
                             </div>
 
-                            {/* Display Image with margin */}
+                            {/* Algorithm Image */}
                             {algorithmImage && (
                                 <img
                                     src={algorithmImage}
                                     alt={`${selectedAlgorithm} Illustration`}
-                                    className="my-4 max-w-full block"
+                                    className="my-4 w-full max-w-lg mx-auto rounded-lg object-contain"
                                 />
                             )}
 
                             {/* Language Dropdown */}
-                            <label htmlFor="languageSelect" className="block mt-4 text-[#F5F5F5]">Select Language:</label>
+                            <h2 className="mt-12 text-2xl font-bold mb-2 text-[#F5F5F5]">Source Code</h2>
+                            <label htmlFor="languageSelect" className="block mt-2 text-[#F5F5F5]">Select Language:</label>
                             <select
                                 id="languageSelect"
                                 value={selectedLanguage}
                                 onChange={handleLanguageChange}
                                 className="mt-2 mb-4 p-2 border bg-gray-800 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                             >
+                                <option>Select</option>
                                 <option value="c">C</option>
                                 <option value="java">Java</option>
                                 <option value="python">Python</option>
@@ -1279,7 +1290,7 @@ export default function SortingAlgorithms() {
                             {codeFiles[selectedLanguage as keyof CodeFiles] && (
                                 <div className="text-left">
                                     <pre className="bg-gray-800 p-4 rounded overflow-x-auto">
-                                        <code className={`language-${selectedLanguage}`}>
+                                        <code ref={codeBlockRef} className={`language-${selectedLanguage}`}>
                                             {codeFiles[selectedLanguage as keyof CodeFiles]}
                                         </code>
                                     </pre>
@@ -1297,6 +1308,16 @@ export default function SortingAlgorithms() {
                         <h3 className="text-base sm:text-lg text-[#E0E0E0]">Enter an array to visualize the sorting algorithm.</h3>
                     )}
                 </div>
+                <Toaster
+                    position="bottom-right"
+                    richColors
+                    toastOptions={{
+                        style: {
+                            background: '#1F1F1F',
+                            color: '#E0E0E0',
+                        },
+                    }}
+                />
             </motion.div>
         </div >
     );
