@@ -11,5 +11,5 @@
         "Slower compared to more advanced algorithms like quicksort and mergesort.",
         "Does not adapt well to already sorted or nearly sorted data."
     ],
-    "languages": ["C", "Java", "Python", "JavaScript"]
+    "languages": ["C", "Java", "Python", "JavaScript", "C#"]
 }
