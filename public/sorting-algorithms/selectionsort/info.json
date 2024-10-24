@@ -1,0 +1,15 @@
+{
+    "advantages": [
+        "Simple to understand and implement.",
+        "Performs well on small datasets.",
+        "In-place sorting algorithm (requires only O(1) additional memory).",
+        "Has minimal data movement compared to other sorting algorithms (performs at most n swaps)."
+    ],
+    "disadvantages": [
+        "Inefficient for large datasets with a time complexity of O(n^2) in all cases (best, average, and worst).",
+        "Not a stable sorting algorithm (does not maintain the relative order of equal elements).",
+        "Slower compared to more advanced algorithms like quicksort and mergesort.",
+        "Does not adapt well to already sorted or nearly sorted data."
+    ],
+    "languages": ["C", "Java", "Python", "JavaScript"]
+}
