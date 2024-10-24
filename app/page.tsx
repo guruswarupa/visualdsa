@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#121212] text-[#E0E0E0] font-sans">
       <motion.main
-        className="text-center px-6 py-12 sm:px-16 sm:py-20"
+        className="flex flex-col justify-center items-center text-center h-screen px-6 py-12 sm:px-16 sm:py-20"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeInOut" }}
@@ -81,7 +81,7 @@ export default function Home() {
 
       {/* Buy Me a Coffee Section */}
       <motion.div
-        className="mt-12 flex flex-col items-center"
+        className="flex flex-col justify-center items-center mt-12"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.7 }}
