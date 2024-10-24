@@ -1,8 +1,9 @@
 "use client";
-
 import { ArrowUpIcon } from "@heroicons/react/24/solid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
 
 const bucketColors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A1", "#33FFF3"];
 
@@ -61,7 +62,8 @@ export default function SortingAlgorithms() {
         python: null,
         javascript: null
     });
-    const [selectedLanguage, setSelectedLanguage] = useState<string>('c'); // Default selected language
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('c');
+    const codeRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         const fetchAlgorithmData = async () => {
@@ -114,6 +116,19 @@ export default function SortingAlgorithms() {
         fetchAlgorithmData();
     }, [selectedAlgorithm]);
 
+    // Re-run syntax highlighting when selectedAlgorithm, selectedLanguage, or codeFiles changes
+    useEffect(() => {
+        // Remove previous highlighting attribute from all code elements
+        const codeBlocks = document.querySelectorAll('code');
+        codeBlocks.forEach((block) => {
+            block.removeAttribute('data-highlighted');
+        });
+
+        // Apply new syntax highlighting
+        hljs.highlightAll();
+    }, [selectedAlgorithm, selectedLanguage, codeFiles]);
+
+
     // Function to copy code to clipboard
     const copyToClipboard = () => {
         const code = codeFiles[selectedLanguage as keyof CodeFiles]; // Get the code for the selected language
@@ -126,7 +141,8 @@ export default function SortingAlgorithms() {
 
     // Handle language selection
     const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedLanguage(e.target.value);
+        const newLanguage = e.target.value;
+        setSelectedLanguage(newLanguage);
     };
 
     const handleArrayInput = () => {
@@ -1264,7 +1280,9 @@ export default function SortingAlgorithms() {
                             {codeFiles[selectedLanguage as keyof CodeFiles] && (
                                 <div className="text-left">
                                     <pre className="bg-gray-800 p-4 rounded overflow-x-auto">
-                                        <code>{codeFiles[selectedLanguage as keyof CodeFiles]}</code>
+                                        <code className={`language-${selectedLanguage}`}>
+                                            {codeFiles[selectedLanguage as keyof CodeFiles]}
+                                        </code>
                                     </pre>
                                     <button
                                         onClick={copyToClipboard}
@@ -1274,6 +1292,7 @@ export default function SortingAlgorithms() {
                                     </button>
                                 </div>
                             )}
+
                         </div>
                     ) : (
                         <h3 className="text-base sm:text-lg text-[#E0E0E0]">Enter an array to visualize the sorting algorithm.</h3>
