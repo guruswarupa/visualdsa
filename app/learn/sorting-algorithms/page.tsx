@@ -1,6 +1,6 @@
 "use client";
 import { ArrowUpIcon } from "@heroicons/react/24/solid";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
@@ -63,7 +63,6 @@ export default function SortingAlgorithms() {
         javascript: null
     });
     const [selectedLanguage, setSelectedLanguage] = useState<string>('c');
-    const codeRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         const fetchAlgorithmData = async () => {
