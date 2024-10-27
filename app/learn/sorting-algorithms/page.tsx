@@ -60,7 +60,7 @@ export default function SortingAlgorithms() {
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
     const [speed, setSpeed] = useState(speedOptions[1].value);
     const speedRef = useRef(speed);
-    const [iterationCount, setIterationCount] = useState(0); // State to track number of iterations
+    const [iterationCount, setIterationCount] = useState(0);
     const [advantages, setAdvantages] = useState<string[]>([]);
     const [disadvantages, setDisadvantages] = useState<string[]>([]);
     const [algorithmImage, setAlgorithmImage] = useState<string | null>(null);
@@ -78,6 +78,13 @@ export default function SortingAlgorithms() {
     });
     const [selectedLanguage, setSelectedLanguage] = useState<string>('');
     const codeBlockRef = useRef<HTMLElement | null>(null); // Reference to the code block
+    const isPausedRef = useRef(false);
+    const isStoppedRef = useRef(false);
+
+    const [bubbleSortIndex, setBubbleSortIndex] = useState({ i: 0, j: 0 });
+    const [insertionSortIndex, setInsertionSortIndex] = useState({ i: 1, j: 0 });
+    const [selectionSortIndex, setSelectionSortIndex] = useState({ i: 0, j: 0 });
+
 
     useEffect(() => {
         speedRef.current = speed;
@@ -182,18 +189,58 @@ export default function SortingAlgorithms() {
         setSelectedLanguage(e.target.value);
     };
 
-
     const handleArrayInput = () => {
         const numbers = arrayInput.split(",").map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
         setArray(numbers);
-        setOriginalArray(numbers); // Store o   riginal array
+        setOriginalArray(numbers); // Store original array
         setSorting(false);
         setSortedIndex([]);
         setCurrentPair(null);
     };
 
+    const handleVisualizeSorting = () => {
+        setIterationCount(0);
+        setBubbleSortIndex({ i: 0, j: 0 }); // Reset bubble sort index
+        setInsertionSortIndex({ i: 1, j: 0 }); // Reset insertion sort index
+        setSelectionSortIndex({ i: 0, j: 0 }); // Reset selection sort index
+        handleArrayInput(); // Set the input array
+        setSorting(true); // Start sorting
+        isStoppedRef.current = false; // Ensure sorting isn't stopped
+        isPausedRef.current = false; // Reset paused state
+    };
+
+    const playSorting = () => {
+        isPausedRef.current = false; // Set paused to false
+    
+        // If sorting was stopped, prepare to restart
+        if (isStoppedRef.current) {
+            handleArrayInput(); // Reset current state for sorting
+            setSorting(true); // Start sorting
+            isStoppedRef.current = false; // Reset the stop state
+        } else if (!sorting) {
+            // If it wasn't stopped but paused, we need to continue
+            setSorting(true); // Resume sorting
+        }
+    };
+    
+
+    const pauseSorting = () => {
+        isPausedRef.current = true; // Mark sorting as paused
+        setSorting(false); // Stop the rendering loop
+    };
+
+    const stopSorting = () => {
+        setIterationCount(0);
+        isStoppedRef.current = true; // Mark sorting as stopped
+        setSorting(false); // Stop sorting
+        setArray(originalArray); // Reset to the original array
+        setCurrentPair(null);
+        setSortedIndex([]);
+    };
+
     useEffect(() => {
-        if (sorting) {
+        const sort = async () => {
+            if (!sorting || isStoppedRef.current) return;
             switch (selectedAlgorithm) {
                 case "Bubble Sort":
                     bubbleSort(array);
@@ -256,93 +303,155 @@ export default function SortingAlgorithms() {
                     break;
             }
         }
+        sort();
     }, [sorting, selectedAlgorithm]);
 
-    // Sorting logic
+    //bubble sort
     const bubbleSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
-        for (let i = 0; i < n - 1; i++) {
-            for (let j = 0; j < n - i - 1; j++) {
+        let { i, j } = bubbleSortIndex;
+    
+        if (i === undefined || j === undefined) {
+            i = 0;
+            j = 0;
+        }
+    
+        while (i < n - 1) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setBubbleSortIndex({ i, j });
+                return;
+            }
+    
+            if (j < n - i - 1) {
                 setCurrentPair([j, j + 1]);
                 setIterationCount(prev => prev + 1);
-                await delay(speedRef.current); // Use the current speed from the ref
-
+                await delay(speedRef.current);
+    
                 if (newArr[j] > newArr[j + 1]) {
                     [newArr[j], newArr[j + 1]] = [newArr[j + 1], newArr[j]];
                     setArray([...newArr]);
-                    setIterationCount(prev => prev + 1);
                 }
+    
+                j++;
+            } else {
+                setSortedIndex(prev => [...prev, n - i - 1]); // Mark current index as sorted
+                await delay(200); // Pause to visualize sorting
+    
+                i++;
+                j = 0;
             }
-            setSortedIndex((prev) => [...prev, n - i - 1]);
-            await delay(200);
         }
-        setSortedIndex((prev) => [...prev, 0]);
+    
+        setSortedIndex(prev => [...prev, 0]); // Mark the last element as sorted
         setCurrentPair(null);
         setSorting(false);
     };
-
+    
     //insertion sort
     const insertionSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
-        for (let i = 1; i < n; i++) {
+        let { i, j } = insertionSortIndex;
+    
+        if (i === undefined || j === undefined) {
+            i = 0;
+            j = 0;
+        }
+    
+        while (i < n) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setInsertionSortIndex({ i, j });
+                return;
+            }
+    
             const key = newArr[i];
-            let j = i - 1;
-
+            j = i - 1;
+    
             while (j >= 0 && newArr[j] > key) {
+                if (isPausedRef.current || isStoppedRef.current) {
+                    setInsertionSortIndex({ i, j });
+                    return;
+                }
+    
                 setCurrentPair([j, j + 1]);
                 await delay(speedRef.current);
-
+    
                 newArr[j + 1] = newArr[j];
-                j = j - 1;
                 setArray([...newArr]);
                 setIterationCount(prev => prev + 1);
+                j--;
             }
+    
             newArr[j + 1] = key;
             setArray([...newArr]);
             setIterationCount(prev => prev + 1);
-            setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
-            await delay(200);
+            setSortedIndex(prev => [...prev, i]); // Mark current element as sorted
+            await delay(200); // Pause to visualize sorting
+            i++;
         }
-        // Mark the first element as sorted if it's not already included
+    
         if (!sortedIndex.includes(0)) {
-            setSortedIndex((prev) => [...prev, 0]); // Mark the first element as sorted
+            setSortedIndex(prev => [...prev, 0]); // Mark first element as sorted
         }
+    
         setCurrentPair(null);
         setSorting(false);
     };
-
+    
     //selection sort
     const selectionSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
-
-        for (let i = 0; i < n - 1; i++) {
+    
+        // Initialize indices from the state
+        let { i, j } = selectionSortIndex;
+    
+        // Ensure we start from the last known state if resuming
+        while (i < n - 1) {
+            // If paused or stopped, exit to resume later
+            if (isPausedRef.current || isStoppedRef.current) {
+                setSelectionSortIndex({ i, j }); // Save current indices before exiting
+                return;
+            }
+    
             let minIndex = i;
-            for (let j = i + 1; j < n; j++) {
-                setCurrentPair([minIndex, j]);
+            j = i + 1; // Start inner loop
+    
+            // Inner loop to find the minimum element
+            while (j < n) {
+                setCurrentPair([minIndex, j]); // Highlight the current comparison pair
                 await delay(speedRef.current); // Slow down the sorting
-                setIterationCount(prev => prev + 1);
-
+                setIterationCount(prev => prev + 1); // Increment comparison count
+    
+                // Update minIndex if a new minimum is found
                 if (newArr[j] < newArr[minIndex]) {
                     minIndex = j;
                 }
+                j++; // Move to the next element
             }
-            // Swap the found minimum element with the first element
+    
+            // After inner loop, check if a swap is needed
             if (minIndex !== i) {
+                // Perform the swap
                 [newArr[i], newArr[minIndex]] = [newArr[minIndex], newArr[i]];
-                setArray([...newArr]);
-                setIterationCount(prev => prev + 1);
+                setArray([...newArr]); // Update the displayed array
+                setIterationCount(prev => prev + 1); // Increment swap count
             }
-            setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
-            await delay(200);
+    
+            // Mark the current index as sorted
+            setSortedIndex(prev => [...prev, i]); // Highlight the sorted element
+            i++; // Move to the next outer loop iteration
+    
+            await delay(200); // Delay before the next iteration
         }
-        setSortedIndex((prev) => [...prev, n - 1]); // Mark the final element as sorted
-        setCurrentPair(null);
+    
+        // Mark the last element as sorted
+        setSortedIndex(prev => [...prev, n - 1]); // Mark last element as sorted
+        setCurrentPair(null); // Clear current pair to avoid type issue
         setSorting(false);
     };
-
+    
     //bingo sort
     const bingoSort = async (arr: number[]) => {
         const newArr = [...arr];
@@ -375,8 +484,8 @@ export default function SortingAlgorithms() {
         setCurrentPair(null);
         setSorting(false);
     };
-
-    //bucket Sort
+    
+    // Bucket Sort
     const bucketSort = async (arr: number[]) => {
         const newArr = arr.map(Math.floor); // Ensure all numbers are integers
         const max = Math.max(...newArr);
@@ -385,32 +494,45 @@ export default function SortingAlgorithms() {
 
         // Fill the buckets
         newArr.forEach(num => {
+            if (isPausedRef.current || isStoppedRef.current) return;
             const bucketIndex = Math.floor(num); // No need for min adjustment
             buckets[bucketIndex].push(num);
             setIterationCount(prev => prev + 1);
         });
 
         const result: number[] = []; // Store the sorted result
+
         // Sort individual buckets and collect numbers
         for (let i = 0; i < buckets.length; i++) {
             const bucket = buckets[i];
             if (bucket.length > 0) {
-                bucket.sort((a, b) => a - b); // Sort each bucket (although most will have 1 item)
+                bucket.sort((a, b) => a - b); // Sort each bucket
+
+                // Add sorted bucket elements to the result array
                 for (const num of bucket) {
+                    // Handle pausing during the addition of elements
+                    while (isPausedRef.current) {
+                        await delay(100); // Polling interval while paused
+                    }
+
+                    if (isStoppedRef.current) return; // If sorting was stopped, exit
+
                     result.push(num); // Add to the result array
-                    setArray([...result]); // Update the displayed array
-                    setCurrentPair([bucket.indexOf(num), num]);
-                    await delay(speedRef.current);
-                    setIterationCount(prev => prev + 1);
+                    setArray([...result]); // Update the displayed array with the current sorted result
+                    setCurrentPair([i, num]); // Set current pair to visualize
+                    await delay(speedRef.current); // Delay based on speed
+                    setIterationCount(prev => prev + 1); // Increment the iteration count
                 }
             }
         }
 
+        // After sorting is complete, update the sorted index
         setSortedIndex([...Array(result.length).keys()]); // Mark all as sorted
         setCurrentPair(null);
         setSorting(false);
     };
 
+    // Counting Sort
     const countingSort = async (arr: number[]) => {
         const newArr = arr.map(Math.floor); // Ensure all numbers are integers
         const max = Math.max(...newArr);
@@ -419,6 +541,12 @@ export default function SortingAlgorithms() {
 
         // Count each number's occurrences
         for (const num of newArr) {
+            while (isPausedRef.current) {
+                await delay(100); // Polling interval while paused
+            }
+
+            if (isStoppedRef.current) return; // If sorting was stopped, exit
+
             count[num]++;
             setIterationCount(prev => prev + 1);
         }
@@ -426,16 +554,25 @@ export default function SortingAlgorithms() {
         // Build the sorted array
         for (let i = 0; i < count.length; i++) {
             while (count[i] > 0) {
+                while (isPausedRef.current) {
+                    await delay(100); // Polling interval while paused
+                }
+
+                if (isStoppedRef.current) return; // If sorting was stopped, exit
+
                 result.push(i);
                 setArray([...result]); // Update the displayed array
-                setCurrentPair([result.length - 1, i]);
+                setCurrentPair([result.length - 1, i]); // Visualize current element being added
+
+                // Change the color for the visual representation of sorting
+                // Assuming you have a way to manage the colors in your array
+                setSortedIndex(prev => [...prev, result.length - 1]); // Mark as sorted
                 await delay(speedRef.current); // Slow down the visualization
                 setIterationCount(prev => prev + 1);
                 count[i]--;
             }
         }
 
-        setSortedIndex([...Array(result.length).keys()]); // Mark all as sorted
         setCurrentPair(null);
         setSorting(false);
     };
@@ -462,7 +599,7 @@ export default function SortingAlgorithms() {
                 setArray([...arr]);
                 setIterationCount(prev => prev + 1);
                 await delay(speedRef.current);
-
+                if (isPausedRef.current || isStoppedRef.current) return;
                 await heapify(arr, n, largest);
             }
         };
@@ -472,11 +609,13 @@ export default function SortingAlgorithms() {
         }
 
         for (let i = n - 1; i > 0; i--) {
+            if (isPausedRef.current || isStoppedRef.current) return;
             [newArr[0], newArr[i]] = [newArr[i], newArr[0]];
             setArray([...newArr]);
             setIterationCount(prev => prev + 1);
             setSortedIndex((prev) => [...prev, i]);
             await delay(speedRef.current);
+            if (isPausedRef.current || isStoppedRef.current) return;
             await heapify(newArr, i, 0);
         }
 
@@ -493,6 +632,7 @@ export default function SortingAlgorithms() {
         const merge = async (left: number[], right: number[]): Promise<number[]> => {
             const result: number[] = [];
             while (left.length || right.length) {
+                if (isPausedRef.current || isStoppedRef.current) return result;
                 if (left.length && (!right.length || left[0] < right[0])) {
                     result.push(left.shift()!); // Use '!' to assert that shift does not return undefined
                 } else {
@@ -507,6 +647,7 @@ export default function SortingAlgorithms() {
 
         // Explicitly define return type as Promise<number[]>
         const sort = async (arr: number[]): Promise<number[]> => {
+            if (isPausedRef.current || isStoppedRef.current) return arr;
             if (arr.length <= 1) return arr; // Base case: return single element or empty array
             const mid = Math.floor(arr.length / 2);
 
@@ -528,8 +669,10 @@ export default function SortingAlgorithms() {
         const newArr = [...arr];
 
         const sort = async (arr: number[], low: number, high: number) => {
+            if (isPausedRef.current || isStoppedRef.current) return;
             if (low < high) {
                 const pi = await partition(arr, low, high);
+                if (pi === undefined) return; // Handle the case where partition returns undefined
                 await sort(arr, low, pi - 1);
                 await sort(arr, pi + 1, high);
             }
@@ -540,6 +683,7 @@ export default function SortingAlgorithms() {
             let i = low - 1;
 
             for (let j = low; j < high; j++) {
+                if (isPausedRef.current || isStoppedRef.current) return undefined; // Return undefined to indicate interruption
                 setCurrentPair([i + 1, j]);
                 setIterationCount(prev => prev + 1);
                 await delay(speedRef.current);
@@ -553,7 +697,7 @@ export default function SortingAlgorithms() {
             setArray([...arr]);
             setSortedIndex((prev) => [...prev, i + 1]);
             await delay(speedRef.current);
-            return i + 1;
+            return i + 1; // Return the partition index
         };
 
         await sort(newArr, 0, newArr.length - 1);
@@ -562,12 +706,14 @@ export default function SortingAlgorithms() {
         setSorting(false);
     };
 
+
     // Radix Sort
     const radixSort = async (arr: number[]) => {
         const newArr = [...arr];
         const max = Math.max(...newArr);
 
         for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+            if (isPausedRef.current || isStoppedRef.current) return;
             await countingSortByDigit(newArr, exp);
         }
 
@@ -590,6 +736,7 @@ export default function SortingAlgorithms() {
         }
 
         for (let i = n - 1; i >= 0; i--) {
+            if (isPausedRef.current || isStoppedRef.current) return;
             output[count[Math.floor(arr[i] / exp) % 10] - 1] = arr[i];
             count[Math.floor(arr[i] / exp) % 10]--;
             setArray([...output]); // Update the displayed array
@@ -883,10 +1030,10 @@ export default function SortingAlgorithms() {
     const introsort = async (arr: number[]) => {
         const newArr = [...arr];
         const maxDepth = Math.floor(Math.log(newArr.length) * 2);
-    
+
         const sort = async (start: number, end: number, depth: number) => {
             if (end - start <= 1) return;
-    
+
             if (depth === 0) {
                 // Use Heapsort when depth is 0
                 await heapsort(newArr, start, end);
@@ -895,36 +1042,36 @@ export default function SortingAlgorithms() {
                 setArray([...newArr]); // Update state to visualize
                 setIterationCount(prev => prev + 1);
                 await delay(speedRef.current); // Delay for visualization
-    
+
                 // Recursively sort the left and right partitions
                 await sort(start, pivotIndex, depth - 1); // Sort left partition
                 await sort(pivotIndex + 1, end, depth - 1); // Sort right partition
             }
         };
-    
+
         await sort(0, newArr.length, maxDepth); // Start the sorting
         setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
         setCurrentPair(null); // Clear current pair
         setSorting(false); // Update sorting state
     };
-    
+
     // Helper Function for Heapsort
     const heapsort = async (arr: number[], start: number, end: number) => {
         const n = end - start;
-    
+
         const heapify = async (n: number, i: number) => {
             let largest = i;
             const left = 2 * i + 1;
             const right = 2 * i + 2;
-    
+
             if (left < n && arr[start + left] > arr[start + largest]) {
                 largest = left;
             }
-    
+
             if (right < n && arr[start + right] > arr[start + largest]) {
                 largest = right;
             }
-    
+
             if (largest !== i) {
                 [arr[start + i], arr[start + largest]] = [arr[start + largest], arr[start + i]];
                 setArray([...arr]); // Update state to visualize
@@ -933,12 +1080,12 @@ export default function SortingAlgorithms() {
                 await heapify(n, largest);
             }
         };
-    
+
         // Build heap
         for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
             await heapify(n, i);
         }
-    
+
         // One by one extract elements from heap
         for (let i = n - 1; i > 0; i--) {
             [arr[start], arr[start + i]] = [arr[start + i], arr[start]]; // Move current root to end
@@ -948,12 +1095,12 @@ export default function SortingAlgorithms() {
             await heapify(i, 0); // Call max heapify on the reduced heap
         }
     };
-    
+
     // Helper function for partitioning used in Introsort
     const partition = async (arr: number[], low: number, high: number) => {
         const pivot = arr[high - 1];
         let i = low - 1;
-    
+
         for (let j = low; j < high - 1; j++) {
             if (arr[j] < pivot) {
                 i++;
@@ -965,7 +1112,7 @@ export default function SortingAlgorithms() {
         [arr[i + 1], arr[high - 1]] = [arr[high - 1], arr[i + 1]];
         return i + 1;
     };
-    
+
     //3 way merge sort
     const mergeSort3Way = async (arr: number[]) => {
         const newArr = [...arr];
@@ -1184,15 +1331,23 @@ export default function SortingAlgorithms() {
 
                     {/* Visualize Button */}
                     <button
-                        onClick={() => {
-                            setIterationCount(0);
-                            handleArrayInput();
-                            setSorting(true);
-                        }}
-                        className="w-full py-2 px-4 bg-[#E62B1E] hover:bg-[#C6261A] text-white rounded-md transition duration-300 ease-in-out disabled:bg-[#383838]"
+                        onClick={handleVisualizeSorting}
+                        className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white rounded-md transition duration-300 ease-in-out disabled:bg-[#383838]"
                         disabled={sorting}
                     >
                         Visualize Sorting
+                    </button>
+                    <button
+                        onClick={stopSorting}
+                        className="w-full py-2 px-4 bg-red-600 hover:bg-red-500 text-white rounded-md transition duration-300 ease-in-out"
+                    >
+                        Stop
+                    </button>
+                    <button
+                        onClick={isPausedRef.current ? playSorting : pauseSorting}
+                        className={`w-full py-2 px-4 text-white rounded-md transition duration-300 ease-in-out ${isPausedRef.current ? 'bg-yellow-600 hover:bg-yellow-500' : 'bg-green-600 hover:bg-green-500'}`}
+                    >
+                        {isPausedRef.current ? 'Resume' : 'Pause'}
                     </button>
                 </div>
             </motion.div>
