@@ -1,13 +1,14 @@
 {
     "advantages": [
-    "Simple to understand and implement.",
-    "Does not require any additional memory (in-place sorting).",
-    "Can be optimized to stop early if the list is already sorted."
+        "Very simple to understand and implement, making it an excellent educational tool.",
+        "Stable sort: maintains the relative order of equal elements.",
+        "Can detect whether the array is already sorted, allowing for an early exit in best-case scenarios, leading to O(n) complexity.",
+        "In-place sorting algorithm: does not require additional memory."
     ],
     "disadvantages": [
-    "Inefficient for large datasets with a time complexity of O(n^2).",
-    "Not suitable for large lists due to its poor performance compared to more advanced algorithms like quicksort or mergesort.",
-    "The performance does not improve significantly with optimizations compared to other algorithms."
+        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
+        "Not suitable for practical applications where performance is a concern.",
+        "Requires many comparisons and swaps, leading to poor performance compared to more advanced sorting algorithms.",
+        "Performance improves only slightly for nearly sorted data compared to more efficient algorithms."
     ]
 }
-  

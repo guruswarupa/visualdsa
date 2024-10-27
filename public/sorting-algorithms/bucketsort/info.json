@@ -1,15 +1,15 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Efficient for sorting uniformly distributed data, achieving O(n) time complexity in the best and average cases.",
+        "Can handle large datasets well when combined with a good sorting algorithm for individual buckets (e.g., insertion sort).",
+        "In-place sorting can be implemented, requiring minimal additional memory.",
+        "Stable sorting algorithm, preserving the relative order of equal elements.",
+        "Can be parallelized, improving performance on multi-core systems."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
+        "Requires extra memory for the buckets, which can be significant for large datasets.",
+        "Performance heavily depends on the choice of the bucket size and the distribution of the input data.",
+        "Not suitable for sorting data with a high variance in value distribution.",
+        "The worst-case time complexity can degrade to O(n^2) if all elements fall into a single bucket."
     ]
 }

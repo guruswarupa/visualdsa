@@ -1,15 +1,14 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Simple to understand and implement, based on a straightforward conceptual model.",
+        "Efficient for small ranges of input values, particularly when the number of items is close to the range of keys.",
+        "Stable sort: maintains the relative order of equal elements.",
+        "Works well with integers or objects with a known, limited range."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
+        "Inefficient for large datasets with wide ranges of values, leading to excessive memory usage.",
+        "Time complexity is O(n + range), which can be inefficient if the range is significantly larger than the number of items.",
+        "Not suitable for sorting data types that are not easily mapped to specific ranges (e.g., strings).",
+        "Requires additional memory for the pigeonhole array, which can be a limitation for large datasets."
     ]
 }

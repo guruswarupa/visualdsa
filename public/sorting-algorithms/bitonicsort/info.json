@@ -1,15 +1,13 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Parallelizable: can be efficiently implemented on parallel architectures.",
+        "Stable sorting algorithm when implemented carefully.",
+        "Has a predictable performance with a time complexity of O(log² n) in the best, average, and worst cases.",
+        "Suitable for sorting large data sets, especially when used in parallel processing."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
+        "Requires additional space for the auxiliary array, making it less memory-efficient.",
+        "Not adaptive: does not perform better on partially sorted data compared to fully unsorted data.",
+        "Complex to implement compared to simpler algorithms like Quick Sort or Merge Sort."
     ]
 }

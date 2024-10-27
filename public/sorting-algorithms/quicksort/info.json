@@ -1,15 +1,14 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Very efficient for large datasets with an average-case time complexity of O(n log n).",
+        "In-place sorting algorithm, requiring only a small amount of additional memory (O(log n) for recursion stack).",
+        "Generally faster in practice compared to other O(n log n) algorithms like Merge Sort, especially for smaller datasets.",
+        "Simple to implement with a straightforward partitioning process."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
+        "Worst-case time complexity of O(n^2) occurs when the pivot selection is poor (e.g., already sorted data).",
+        "Not a stable sorting algorithm, which may affect the order of equal elements.",
+        "Performance can degrade significantly on small datasets compared to algorithms like Insertion Sort.",
+        "Recursive implementation can lead to stack overflow for very large datasets if not handled carefully."
     ]
 }
