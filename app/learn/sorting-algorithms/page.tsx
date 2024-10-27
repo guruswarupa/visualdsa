@@ -58,7 +58,8 @@ export default function SortingAlgorithms() {
     const [sorting, setSorting] = useState(false);
     const [currentPair, setCurrentPair] = useState<[number, number] | null>(null);
     const [sortedIndex, setSortedIndex] = useState<number[]>([]);
-    const [speed, setSpeed] = useState(1000); // Default speed 1s
+    const [speed, setSpeed] = useState(speedOptions[1].value);
+    const speedRef = useRef(speed);
     const [iterationCount, setIterationCount] = useState(0); // State to track number of iterations
     const [advantages, setAdvantages] = useState<string[]>([]);
     const [disadvantages, setDisadvantages] = useState<string[]>([]);
@@ -77,6 +78,10 @@ export default function SortingAlgorithms() {
     });
     const [selectedLanguage, setSelectedLanguage] = useState<string>('');
     const codeBlockRef = useRef<HTMLElement | null>(null); // Reference to the code block
+
+    useEffect(() => {
+        speedRef.current = speed;
+    }, [speed]);
 
     useEffect(() => {
         const fetchAlgorithmData = async () => {
@@ -253,7 +258,7 @@ export default function SortingAlgorithms() {
         }
     }, [sorting, selectedAlgorithm]);
 
-    //bubble sort
+    // Sorting logic
     const bubbleSort = async (arr: number[]) => {
         const newArr = [...arr];
         const n = newArr.length;
@@ -261,19 +266,18 @@ export default function SortingAlgorithms() {
             for (let j = 0; j < n - i - 1; j++) {
                 setCurrentPair([j, j + 1]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed); // Slow down the sorting
+                await delay(speedRef.current); // Use the current speed from the ref
 
                 if (newArr[j] > newArr[j + 1]) {
-                    // Swap elements
                     [newArr[j], newArr[j + 1]] = [newArr[j + 1], newArr[j]];
                     setArray([...newArr]);
                     setIterationCount(prev => prev + 1);
                 }
             }
-            setSortedIndex((prev) => [...prev, n - i - 1]); // Mark last sorted element
-            await delay(500); // Small delay after each pass
+            setSortedIndex((prev) => [...prev, n - i - 1]);
+            await delay(200);
         }
-        setSortedIndex((prev) => [...prev, 0]); // Mark the final element as sorted
+        setSortedIndex((prev) => [...prev, 0]);
         setCurrentPair(null);
         setSorting(false);
     };
@@ -288,7 +292,7 @@ export default function SortingAlgorithms() {
 
             while (j >= 0 && newArr[j] > key) {
                 setCurrentPair([j, j + 1]);
-                await delay(speed); // Slow down the sorting
+                await delay(speed);
 
                 newArr[j + 1] = newArr[j];
                 j = j - 1;
@@ -299,7 +303,7 @@ export default function SortingAlgorithms() {
             setArray([...newArr]);
             setIterationCount(prev => prev + 1);
             setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
-            await delay(500);
+            await delay(200);
         }
         // Mark the first element as sorted if it's not already included
         if (!sortedIndex.includes(0)) {
@@ -332,7 +336,7 @@ export default function SortingAlgorithms() {
                 setIterationCount(prev => prev + 1);
             }
             setSortedIndex((prev) => [...prev, i]); // Mark element as sorted
-            await delay(500);
+            await delay(200);
         }
         setSortedIndex((prev) => [...prev, n - 1]); // Mark the final element as sorted
         setCurrentPair(null);
@@ -879,91 +883,89 @@ export default function SortingAlgorithms() {
     const introsort = async (arr: number[]) => {
         const newArr = [...arr];
         const maxDepth = Math.floor(Math.log(newArr.length) * 2);
-
+    
         const sort = async (start: number, end: number, depth: number) => {
             if (end - start <= 1) return;
-
+    
             if (depth === 0) {
-                await heapsort(newArr, start, end); // Switch to Heap Sort
+                // Use Heapsort when depth is 0
+                await heapsort(newArr, start, end);
             } else {
                 const pivotIndex = await partition(newArr, start, end);
                 setArray([...newArr]); // Update state to visualize
                 setIterationCount(prev => prev + 1);
                 await delay(speed); // Delay for visualization
-
+    
+                // Recursively sort the left and right partitions
                 await sort(start, pivotIndex, depth - 1); // Sort left partition
                 await sort(pivotIndex + 1, end, depth - 1); // Sort right partition
             }
         };
-
+    
         await sort(0, newArr.length, maxDepth); // Start the sorting
         setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
         setCurrentPair(null); // Clear current pair
         setSorting(false); // Update sorting state
     };
-
-    // Helper Function for Heapsort (Make sure to include this function)
+    
+    // Helper Function for Heapsort
     const heapsort = async (arr: number[], start: number, end: number) => {
+        const n = end - start;
+    
         const heapify = async (n: number, i: number) => {
-            let largest = i; // Initialize largest as root
-            const left = 2 * i + 1; // Left child index
-            const right = 2 * i + 2; // Right child index
-
-            // If left child is larger than root
-            if (left < n && arr[left] > arr[largest]) {
+            let largest = i;
+            const left = 2 * i + 1;
+            const right = 2 * i + 2;
+    
+            if (left < n && arr[start + left] > arr[start + largest]) {
                 largest = left;
             }
-
-            // If right child is larger than largest so far
-            if (right < n && arr[right] > arr[largest]) {
+    
+            if (right < n && arr[start + right] > arr[start + largest]) {
                 largest = right;
             }
-
-            // If largest is not root
+    
             if (largest !== i) {
-                [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+                [arr[start + i], arr[start + largest]] = [arr[start + largest], arr[start + i]];
                 setArray([...arr]); // Update state to visualize
                 setIterationCount(prev => prev + 1);
-                await delay(speed); // Delay for visualization
-
-                // Recursively heapify the affected sub-tree
+                await delay(speed);
                 await heapify(n, largest);
             }
         };
-
+    
         // Build heap
-        for (let i = Math.floor((end - start) / 2) - 1; i >= start; i--) {
-            await heapify(end - start, i);
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            await heapify(n, i);
         }
-
+    
         // One by one extract elements from heap
-        for (let i = end - 1; i > start; i--) {
-            [arr[start], arr[i]] = [arr[i], arr[start]]; // Move current root to end
+        for (let i = n - 1; i > 0; i--) {
+            [arr[start], arr[start + i]] = [arr[start + i], arr[start]]; // Move current root to end
             setArray([...arr]); // Update state to visualize
             setIterationCount(prev => prev + 1);
-            await delay(speed); // Delay for visualization
-
-            await heapify(i, start); // Call max heapify on the reduced heap
+            await delay(speed);
+            await heapify(i, 0); // Call max heapify on the reduced heap
         }
     };
-
+    
     // Helper function for partitioning used in Introsort
     const partition = async (arr: number[], low: number, high: number) => {
         const pivot = arr[high - 1];
         let i = low - 1;
-
+    
         for (let j = low; j < high - 1; j++) {
             if (arr[j] < pivot) {
                 i++;
                 [arr[i], arr[j]] = [arr[j], arr[i]];
                 setArray([...arr]);
-                await delay(1000);
+                await delay(speed);
             }
         }
         [arr[i + 1], arr[high - 1]] = [arr[high - 1], arr[i + 1]];
         return i + 1;
     };
-
+    
     //3 way merge sort
     const mergeSort3Way = async (arr: number[]) => {
         const newArr = [...arr];
@@ -1067,7 +1069,7 @@ export default function SortingAlgorithms() {
             arr[index++] = right[k++];
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(1000);
+            await delay(speed);
         }
     };
 
