@@ -292,7 +292,7 @@ export default function SortingAlgorithms() {
 
             while (j >= 0 && newArr[j] > key) {
                 setCurrentPair([j, j + 1]);
-                await delay(speed);
+                await delay(speedRef.current);
 
                 newArr[j + 1] = newArr[j];
                 j = j - 1;
@@ -322,7 +322,7 @@ export default function SortingAlgorithms() {
             let minIndex = i;
             for (let j = i + 1; j < n; j++) {
                 setCurrentPair([minIndex, j]);
-                await delay(speed); // Slow down the sorting
+                await delay(speedRef.current); // Slow down the sorting
                 setIterationCount(prev => prev + 1);
 
                 if (newArr[j] < newArr[minIndex]) {
@@ -365,7 +365,7 @@ export default function SortingAlgorithms() {
                 result.push(i - offset); // Adjust index back to original value
                 setArray([...result]); // Update displayed array with the current state of sorted results
                 setCurrentPair([result.length - 1, i - offset]); // Highlight the last collected number
-                await delay(speed); // Slow down the visualization
+                await delay(speedRef.current); // Slow down the visualization
                 setIterationCount(prev => prev + 1);
             }
         }
@@ -400,7 +400,7 @@ export default function SortingAlgorithms() {
                     result.push(num); // Add to the result array
                     setArray([...result]); // Update the displayed array
                     setCurrentPair([bucket.indexOf(num), num]);
-                    await delay(speed);
+                    await delay(speedRef.current);
                     setIterationCount(prev => prev + 1);
                 }
             }
@@ -429,7 +429,7 @@ export default function SortingAlgorithms() {
                 result.push(i);
                 setArray([...result]); // Update the displayed array
                 setCurrentPair([result.length - 1, i]);
-                await delay(speed); // Slow down the visualization
+                await delay(speedRef.current); // Slow down the visualization
                 setIterationCount(prev => prev + 1);
                 count[i]--;
             }
@@ -461,7 +461,7 @@ export default function SortingAlgorithms() {
                 [arr[i], arr[largest]] = [arr[largest], arr[i]];
                 setArray([...arr]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
 
                 await heapify(arr, n, largest);
             }
@@ -476,7 +476,7 @@ export default function SortingAlgorithms() {
             setArray([...newArr]);
             setIterationCount(prev => prev + 1);
             setSortedIndex((prev) => [...prev, i]);
-            await delay(speed);
+            await delay(speedRef.current);
             await heapify(newArr, i, 0);
         }
 
@@ -500,7 +500,7 @@ export default function SortingAlgorithms() {
                 }
                 setArray([...result, ...left, ...right]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
             }
             return result;
         };
@@ -542,7 +542,7 @@ export default function SortingAlgorithms() {
             for (let j = low; j < high; j++) {
                 setCurrentPair([i + 1, j]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
                 if (arr[j] < pivot) {
                     i++;
                     [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -552,7 +552,7 @@ export default function SortingAlgorithms() {
             [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
             setArray([...arr]);
             setSortedIndex((prev) => [...prev, i + 1]);
-            await delay(speed);
+            await delay(speedRef.current);
             return i + 1;
         };
 
@@ -594,7 +594,7 @@ export default function SortingAlgorithms() {
             count[Math.floor(arr[i] / exp) % 10]--;
             setArray([...output]); // Update the displayed array
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         for (let i = 0; i < n; i++) {
@@ -615,7 +615,7 @@ export default function SortingAlgorithms() {
 
                 while (j >= gap && newArr[j - gap] > temp) {
                     setCurrentPair([j, j - gap]);
-                    await delay(speed); // Delay for visualization
+                    await delay(speedRef.current); // Delay for visualization
                     newArr[j] = newArr[j - gap]; // Move the element
                     setArray([...newArr]); // Update the displayed array
                     setIterationCount(prev => prev + 1);
@@ -649,7 +649,7 @@ export default function SortingAlgorithms() {
                 while (j >= left && subArr[j] > key) {
                     setCurrentPair([j, j + 1]);
                     setIterationCount(prev => prev + 1);
-                    await delay(speed);
+                    await delay(speedRef.current);
                     subArr[j + 1] = subArr[j];
                     j--;
                     setArray([...subArr]);
@@ -666,7 +666,7 @@ export default function SortingAlgorithms() {
 
             while (i < leftArr.length && j < rightArr.length) {
                 setCurrentPair([k, left + i]);
-                await delay(speed);
+                await delay(speedRef.current);
                 if (leftArr[i] <= rightArr[j]) {
                     newArr[k++] = leftArr[i++];
                 } else {
@@ -679,13 +679,13 @@ export default function SortingAlgorithms() {
                 newArr[k++] = leftArr[i++];
                 setArray([...newArr]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
             }
             while (j < rightArr.length) {
                 newArr[k++] = rightArr[j++];
                 setArray([...newArr]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
             }
         };
 
@@ -716,7 +716,7 @@ export default function SortingAlgorithms() {
         const compAndSwap = async (a: number[], i: number, j: number, dir: boolean) => {
             setCurrentPair([i, j]);
             setIterationCount((prev) => prev + 1); // Increment iteration count
-            await delay(speed);
+            await delay(speedRef.current);
 
             // Swap based on the direction (true for ascending, false for descending)
             if ((dir && a[i] > a[j]) || (!dir && a[i] < a[j])) {
@@ -793,7 +793,7 @@ export default function SortingAlgorithms() {
                 [newArr[pos], item] = [item, newArr[pos]];
                 setArray([...newArr]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
             }
 
             // Rotate the rest of the cycle
@@ -813,7 +813,7 @@ export default function SortingAlgorithms() {
                     [newArr[pos], item] = [item, newArr[pos]];
                     setArray([...newArr]);
                     setIterationCount(prev => prev + 1);
-                    await delay(speed);
+                    await delay(speedRef.current);
                 }
             }
         }
@@ -843,7 +843,7 @@ export default function SortingAlgorithms() {
                 holes[i]--;
                 setArray([...newArr]);
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
             }
         }
 
@@ -869,7 +869,7 @@ export default function SortingAlgorithms() {
                     [newArr[i], newArr[i + gap]] = [newArr[i + gap], newArr[i]];
                     setArray([...newArr]);
                     setIterationCount(prev => prev + 1);
-                    await delay(speed);
+                    await delay(speedRef.current);
                     swapped = true;
                 }
             }
@@ -894,7 +894,7 @@ export default function SortingAlgorithms() {
                 const pivotIndex = await partition(newArr, start, end);
                 setArray([...newArr]); // Update state to visualize
                 setIterationCount(prev => prev + 1);
-                await delay(speed); // Delay for visualization
+                await delay(speedRef.current); // Delay for visualization
     
                 // Recursively sort the left and right partitions
                 await sort(start, pivotIndex, depth - 1); // Sort left partition
@@ -929,7 +929,7 @@ export default function SortingAlgorithms() {
                 [arr[start + i], arr[start + largest]] = [arr[start + largest], arr[start + i]];
                 setArray([...arr]); // Update state to visualize
                 setIterationCount(prev => prev + 1);
-                await delay(speed);
+                await delay(speedRef.current);
                 await heapify(n, largest);
             }
         };
@@ -944,7 +944,7 @@ export default function SortingAlgorithms() {
             [arr[start], arr[start + i]] = [arr[start + i], arr[start]]; // Move current root to end
             setArray([...arr]); // Update state to visualize
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
             await heapify(i, 0); // Call max heapify on the reduced heap
         }
     };
@@ -959,7 +959,7 @@ export default function SortingAlgorithms() {
                 i++;
                 [arr[i], arr[j]] = [arr[j], arr[i]];
                 setArray([...arr]);
-                await delay(speed);
+                await delay(speedRef.current);
             }
         }
         [arr[i + 1], arr[high - 1]] = [arr[high - 1], arr[i + 1]];
@@ -1013,7 +1013,7 @@ export default function SortingAlgorithms() {
             }
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);  // Visualization delay
+            await delay(speedRef.current);  // Visualization delay
         }
 
         // Merge remaining elements of two arrays
@@ -1025,7 +1025,7 @@ export default function SortingAlgorithms() {
             }
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         while (j < middle.length && k < right.length) {
@@ -1036,7 +1036,7 @@ export default function SortingAlgorithms() {
             }
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         while (i < left.length && k < right.length) {
@@ -1047,7 +1047,7 @@ export default function SortingAlgorithms() {
             }
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         // Merge remaining elements of individual arrays
@@ -1055,21 +1055,21 @@ export default function SortingAlgorithms() {
             arr[index++] = left[i++];
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         while (j < middle.length) {
             arr[index++] = middle[j++];
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
 
         while (k < right.length) {
             arr[index++] = right[k++];
             setArray([...arr]);
             setIterationCount(prev => prev + 1);
-            await delay(speed);
+            await delay(speedRef.current);
         }
     };
 
@@ -1100,7 +1100,7 @@ export default function SortingAlgorithms() {
             shuffleArray(newArr);
             setArray([...newArr]);  // Update the array for visualization
             setIterationCount(prev => prev + 1);
-            await delay(speed);  // Delay to visualize each shuffle
+            await delay(speedRef.current);  // Delay to visualize each shuffle
         }
 
         // Once sorted, mark all as sorted
