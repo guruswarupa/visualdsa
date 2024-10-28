@@ -110,11 +110,6 @@ export default function SortingAlgorithms() {
     result: [] as number[],
     buckets: [] as number[][],
   });
-  const [countingSortState, setCountingSortState] = useState({
-    i: 0, // Current index
-    count: [] as number[], // Count array to track occurrences of each number
-    result: [] as number[], // Result array to store sorted numbers
-  });
 
   ///////////////////update speed as it changes//////////////
   useEffect(() => {
@@ -269,9 +264,9 @@ export default function SortingAlgorithms() {
 
   const handleVisualizeSorting = () => {
     setIterationCount(0);
-    setBubbleSortIndex({ i: 0, j: 0 }); 
-    setInsertionSortIndex({ i: 1, j: 0 }); 
-    setSelectionSortIndex({ i: 0, j: 0 }); 
+    setBubbleSortIndex({ i: 0, j: 0 });
+    setInsertionSortIndex({ i: 1, j: 0 });
+    setSelectionSortIndex({ i: 0, j: 0 });
     setBingoSortState({
       i: 0,
       phase: "marking",
@@ -284,11 +279,6 @@ export default function SortingAlgorithms() {
       phase: "filling",
       result: [] as number[],
       buckets: [] as number[][],
-    });
-    setCountingSortState({
-      i: 0,
-      count: [] as number[],
-      result: [] as number[],
     });
 
     handleArrayInput(); // Set the input array
@@ -636,85 +626,95 @@ export default function SortingAlgorithms() {
     setSorting(false);
   };
   /////////////////////////////////////counting sort///////////////////////////////////////////
-    const countingSort = async (arr: number[]) => {
-        const newArr = arr.map(Math.floor); // Ensure all numbers are integers
-        const max = Math.max(...newArr);
-        // Retrieve or initialize the countingSortState
-        let { i, count, result } = countingSortState;
-        // Initialize `count` array if it's empty (first run or after reset)
-        if (count.length === 0) {
-        count = Array(max + 1).fill(0); // Only non-negative integers
-        newArr.forEach((num) => count[num]++); // Count occurrences of each number
-        setIterationCount((prev) => prev + newArr.length); // Log count phase iterations
+  const countingSort = async (arr: number[]) => {
+    const newArr = arr.map(Math.floor); // Ensure all numbers are integers
+    const max = Math.max(...newArr);
+    const count: number[] = Array(max + 1).fill(0); // Only non-negative integers
+    const result: number[] = [];
+
+    // Count each number's occurrences
+    for (const num of newArr) {
+      while (isPausedRef.current) {
+        await delay(100); // Polling interval while paused
+      }
+
+      if (isStoppedRef.current) return; // If sorting was stopped, exit
+
+      count[num]++;
+      setIterationCount((prev) => prev + 1);
+    }
+
+    // Build the sorted array
+    for (let i = 0; i < count.length; i++) {
+      while (count[i] > 0) {
+        while (isPausedRef.current) {
+          await delay(100); // Polling interval while paused
         }
-        // Phase 2: Build the sorted array from the count
-        for (; i < count.length; i++) {
-        while (count[i] > 0) {
-            while (isPausedRef.current) {
-            await delay(100); // Polling interval while paused
-            }
-            if (isStoppedRef.current) return; // If sorting was stopped, exit
-            result.push(i); // Add number `i` to result array based on its count
-            setArray([...result]); // Update the displayed array
-            setCurrentPair([result.length - 1, i]); // Visualize current element being added
-            // Mark each added element as sorted
-            setSortedIndex((prev) => [...prev, result.length - 1]);
-            await delay(speedRef.current); // Slow down visualization
-            setIterationCount((prev) => prev + 1); // Increment iteration count
-            count[i]--; // Decrease count after adding `i` to result
-        }
-        }
-        // Update the state with final values
-        setCountingSortState({ i, count, result }); // Save final state
-        setCurrentPair(null); // Clear highlight
-        setSorting(false); // Mark sorting as complete
+
+        if (isStoppedRef.current) return; // If sorting was stopped, exit
+
+        result.push(i);
+        setArray([...result]); // Update the displayed array
+        setCurrentPair([result.length - 1, i]); // Visualize current element being added
+
+        // Change the color for the visual representation of sorting
+        // Assuming you have a way to manage the colors in your array
+        setSortedIndex((prev) => [...prev, result.length - 1]); // Mark as sorted
+        await delay(speedRef.current); // Slow down the visualization
+        setIterationCount((prev) => prev + 1);
+        count[i]--;
+      }
+    }
+
+    setCurrentPair(null);
+    setSorting(false);
+  };
+  /////////////////////////////////////heap sort///////////////////////////////////////////
+  const heapSort = async (arr: number[]) => {
+    const newArr = [...arr];
+    const n = newArr.length;
+
+    const heapify = async (arr: number[], n: number, i: number) => {
+      let largest = i;
+      const left = 2 * i + 1;
+      const right = 2 * i + 2;
+
+      if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+      }
+      if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+      }
+
+      if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        setArray([...arr]);
+        setIterationCount((prev) => prev + 1);
+        await delay(speedRef.current);
+        if (isPausedRef.current || isStoppedRef.current) return;
+        await heapify(arr, n, largest);
+      }
     };
-    /////////////////////////////////////heap sort///////////////////////////////////////////
-    const heapSort = async (arr: number[]) => {
-        const newArr = [...arr];
-        const n = newArr.length;
 
-        const heapify = async (arr: number[], n: number, i: number) => {
-            let largest = i;
-            const left = 2 * i + 1;
-            const right = 2 * i + 2;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      await heapify(newArr, n, i);
+    }
 
-            if (left < n && arr[left] > arr[largest]) {
-                largest = left;
-            }
-            if (right < n && arr[right] > arr[largest]) {
-                largest = right;
-            }
+    for (let i = n - 1; i > 0; i--) {
+      if (isPausedRef.current || isStoppedRef.current) return;
+      [newArr[0], newArr[i]] = [newArr[i], newArr[0]];
+      setArray([...newArr]);
+      setIterationCount((prev) => prev + 1);
+      setSortedIndex((prev) => [...prev, i]);
+      await delay(speedRef.current);
+      if (isPausedRef.current || isStoppedRef.current) return;
+      await heapify(newArr, i, 0);
+    }
 
-            if (largest !== i) {
-                [arr[i], arr[largest]] = [arr[largest], arr[i]];
-                setArray([...arr]);
-                setIterationCount(prev => prev + 1);
-                await delay(speedRef.current);
-                if (isPausedRef.current || isStoppedRef.current) return;
-                await heapify(arr, n, largest);
-            }
-        };
-
-        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-            await heapify(newArr, n, i);
-        }
-
-        for (let i = n - 1; i > 0; i--) {
-            if (isPausedRef.current || isStoppedRef.current) return;
-            [newArr[0], newArr[i]] = [newArr[i], newArr[0]];
-            setArray([...newArr]);
-            setIterationCount(prev => prev + 1);
-            setSortedIndex((prev) => [...prev, i]);
-            await delay(speedRef.current);
-            if (isPausedRef.current || isStoppedRef.current) return;
-            await heapify(newArr, i, 0);
-        }
-
-        setSortedIndex((prev) => [...prev, 0]); // Mark the first element as sorted
-        setCurrentPair(null);
-        setSorting(false);
-    };
+    setSortedIndex((prev) => [...prev, 0]); // Mark the first element as sorted
+    setCurrentPair(null);
+    setSorting(false);
+  };
 
   //merge sort
   const mergeSort = async (arr: number[]) => {
@@ -1564,38 +1564,48 @@ export default function SortingAlgorithms() {
                   ))}
                 </div>
               </div>
-                {/* Buckets for Bucket Sort */}
-                {selectedAlgorithm === "Bucket Sort" && (
-                    <>
-                        <h2 className="text-lg sm:text-xl font-bold mt-4 text-[#F5F5F5]">Buckets</h2>
-                        <div className="flex justify-center mb-4">
-                            {bucketSortState.buckets.length > 0 && (
-                                <div className="flex flex-col gap-2">
-                                    {bucketSortState.buckets.map((bucket, index) => (
-                                        // Render only non-empty buckets
-                                        bucket.length > 0 && (
-                                            <div key={`bucket-${index}`} className="flex items-center">
-                                                <div
-                                                    className="w-4 h-4 rounded-full"
-                                                    style={{
-                                                        backgroundColor: bucketColors[index % bucketColors.length],
-                                                    }}
-                                                />
-                                                <div className="flex gap-1 ml-2">
-                                                    {bucket.map((num, idx) => (
-                                                        <span key={`bucket-${index}-item-${idx}`} className="text-white">
-                                                            {num}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )
-                                    ))}
+              {/* Buckets for Bucket Sort */}
+              {selectedAlgorithm === "Bucket Sort" && (
+                <>
+                  <h2 className="text-lg sm:text-xl font-bold mt-4 text-[#F5F5F5]">
+                    Buckets
+                  </h2>
+                  <div className="flex justify-center mb-4">
+                    {bucketSortState.buckets.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        {bucketSortState.buckets.map(
+                          (bucket, index) =>
+                            // Render only non-empty buckets
+                            bucket.length > 0 && (
+                              <div
+                                key={`bucket-${index}`}
+                                className="flex items-center"
+                              >
+                                <div
+                                  className="w-4 h-4 rounded-full"
+                                  style={{
+                                    backgroundColor:
+                                      bucketColors[index % bucketColors.length],
+                                  }}
+                                />
+                                <div className="flex gap-1 ml-2">
+                                  {bucket.map((num, idx) => (
+                                    <span
+                                      key={`bucket-${index}-item-${idx}`}
+                                      className="text-white"
+                                    >
+                                      {num}
+                                    </span>
+                                  ))}
                                 </div>
-                            )}
-                        </div>
-                    </>
-                )}
+                              </div>
+                            )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
               <div className="my-8 p-4 bg-[#1F1F1F] rounded-lg shadow-md">
                 <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">
                   Advantages
