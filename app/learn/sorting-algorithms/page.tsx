@@ -6,15 +6,6 @@ import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
 import { Toaster, toast } from "sonner";
 
-interface SortingState {
-    iterationCount: number;
-    isSorting: boolean;
-    isPaused: boolean;
-    isStopped: boolean;
-    sortedIndex: number[]; // Change here
-    currentPair: null; // You can change this type if needed
-}
-
 ///////////////////////////////initialize colors for buckets/////////////////////////////////////
 const bucketColors = [
   "#FF5733",
