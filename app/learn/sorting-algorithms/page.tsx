@@ -110,7 +110,19 @@ export default function SortingAlgorithms() {
     result: [] as number[],
     buckets: [] as number[][],
   });
-
+  const [countingSortState, setCountingSortState] = useState({
+    i: 0,
+    phase: "counting",
+    count: [] as number[],
+    result: [] as number[],
+  });
+  const [heapSortState, setHeapSortState] = useState({
+    i: 0, 
+    j: 0, 
+    phase: "heapify",
+    heapArr: [] as number[],
+  });
+  
   ///////////////////update speed as it changes//////////////
   useEffect(() => {
     speedRef.current = speed;
@@ -280,7 +292,18 @@ export default function SortingAlgorithms() {
       result: [] as number[],
       buckets: [] as number[][],
     });
-
+    setCountingSortState({
+      i: 0,
+      phase: "counting",
+      count: [] as number[],
+      result: [] as number[],
+    });
+    setHeapSortState({
+      i: 0, 
+      j: 0, 
+      phase: "heapify",
+      heapArr: [] as number[],
+    });
     handleArrayInput(); // Set the input array
     setSorting(true); // Start sorting
     isStoppedRef.current = false; // Ensure sorting isn't stopped
@@ -627,45 +650,63 @@ export default function SortingAlgorithms() {
   };
   /////////////////////////////////////counting sort///////////////////////////////////////////
   const countingSort = async (arr: number[]) => {
-    const newArr = arr.map(Math.floor); // Ensure all numbers are integers
+    const newArr = arr.map(Math.floor);
     const max = Math.max(...newArr);
-    const count: number[] = Array(max + 1).fill(0); // Only non-negative integers
-    const result: number[] = [];
-
-    // Count each number's occurrences
-    for (const num of newArr) {
-      while (isPausedRef.current) {
-        await delay(100); // Polling interval while paused
-      }
-
-      if (isStoppedRef.current) return; // If sorting was stopped, exit
-
-      count[num]++;
-      setIterationCount((prev) => prev + 1);
+    let { i, phase, count, result } = countingSortState;
+  
+    // Initialize count array if it is empty
+    if (count.length === 0) {
+      count = Array(max + 1).fill(0);
     }
-
-    // Build the sorted array
-    for (let i = 0; i < count.length; i++) {
-      while (count[i] > 0) {
-        while (isPausedRef.current) {
-          await delay(100); // Polling interval while paused
+  
+    // Phase 1: Count occurrences
+    if (phase === "counting") {
+      for (; i < newArr.length; i++) {
+        // Pause handling
+        if (isPausedRef.current || isStoppedRef.current) {
+          setCountingSortState({ i, phase: "counting", count, result });
+          return;
         }
-
-        if (isStoppedRef.current) return; // If sorting was stopped, exit
-
-        result.push(i);
-        setArray([...result]); // Update the displayed array
-        setCurrentPair([result.length - 1, i]); // Visualize current element being added
-
-        // Change the color for the visual representation of sorting
-        // Assuming you have a way to manage the colors in your array
-        setSortedIndex((prev) => [...prev, result.length - 1]); // Mark as sorted
-        await delay(speedRef.current); // Slow down the visualization
+  
+        count[newArr[i]]++;
         setIterationCount((prev) => prev + 1);
-        count[i]--;
+  
+        // Update state after each count increment
+        setCountingSortState({ i: i + 1, phase: "counting", count, result });
+        await delay(speedRef.current / 2); // Delay for visualization
+      }
+  
+      // Move to the result collection phase
+      i = 0;
+      phase = "collecting";
+      setCountingSortState({ i, phase, count, result });
+    }
+  
+    // Phase 2: Build the sorted result
+    if (phase === "collecting") {
+      for (; i < count.length; i++) {
+        while (count[i] > 0) {
+          // Pause handling
+          if (isPausedRef.current || isStoppedRef.current) {
+            setCountingSortState({ i, phase: "collecting", count, result });
+            return;
+          }
+  
+          result = [...result, i];
+          setArray(result);
+          setCurrentPair([result.length - 1, i]);
+          setSortedIndex((prev) => [...prev, result.length - 1]);
+          await delay(speedRef.current); // Delay for visualization
+          setIterationCount((prev) => prev + 1);
+          count[i]--;
+  
+          // Update state after adding each element to the result
+          setCountingSortState({ i, phase: "collecting", count, result });
+        }
       }
     }
-
+  
+    // Finalize sorting
     setCurrentPair(null);
     setSorting(false);
   };
@@ -673,50 +714,77 @@ export default function SortingAlgorithms() {
   const heapSort = async (arr: number[]) => {
     const newArr = [...arr];
     const n = newArr.length;
-
+    let { i, j, phase, heapArr } = heapSortState;
+  
+    // Initialize state on first run or reset
+    if (heapArr.length === 0) {
+      i = Math.floor(n / 2) - 1;
+      j = n - 1;
+      heapArr = newArr;
+      setHeapSortState({ i, j, phase, heapArr });
+    }
+  
     const heapify = async (arr: number[], n: number, i: number) => {
       let largest = i;
       const left = 2 * i + 1;
       const right = 2 * i + 2;
-
-      if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-      }
-      if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-      }
-
+  
+      if (left < n && arr[left] > arr[largest]) largest = left;
+      if (right < n && arr[right] > arr[largest]) largest = right;
+  
       if (largest !== i) {
         [arr[i], arr[largest]] = [arr[largest], arr[i]];
         setArray([...arr]);
         setIterationCount((prev) => prev + 1);
         await delay(speedRef.current);
-        if (isPausedRef.current || isStoppedRef.current) return;
+  
+        if (isPausedRef.current || isStoppedRef.current) {
+          setHeapSortState({ i, j, phase: "heapify", heapArr: arr });
+          return;
+        }
         await heapify(arr, n, largest);
       }
     };
-
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-      await heapify(newArr, n, i);
+  
+    // Phase 1: Build the max heap
+    if (phase === "heapify") {
+      for (; i >= 0; i--) {
+        await heapify(heapArr, heapArr.length, i);
+        if (isPausedRef.current || isStoppedRef.current) {
+          setHeapSortState({ i, j, phase: "heapify", heapArr });
+          return;
+        }
+      }
+      phase = "sort";
+      i = heapArr.length - 1;
+      setHeapSortState({ i, j, phase, heapArr });
     }
-
-    for (let i = n - 1; i > 0; i--) {
-      if (isPausedRef.current || isStoppedRef.current) return;
-      [newArr[0], newArr[i]] = [newArr[i], newArr[0]];
-      setArray([...newArr]);
-      setIterationCount((prev) => prev + 1);
-      setSortedIndex((prev) => [...prev, i]);
-      await delay(speedRef.current);
-      if (isPausedRef.current || isStoppedRef.current) return;
-      await heapify(newArr, i, 0);
+  
+    // Phase 2: Sort the heap
+    if (phase === "sort") {
+      for (; i > 0; i--) {
+        if (isPausedRef.current || isStoppedRef.current) {
+          setHeapSortState({ i, j, phase: "sort", heapArr });
+          return;
+        }
+  
+        [heapArr[0], heapArr[i]] = [heapArr[i], heapArr[0]];
+        setArray([...heapArr]);
+        setIterationCount((prev) => prev + 1);
+        setSortedIndex((prev) => [...prev, i]);
+        await delay(speedRef.current);
+  
+        await heapify(heapArr, i, 0);
+        setHeapSortState({ i: i - 1, j, phase: "sort", heapArr });
+      }
     }
-
-    setSortedIndex((prev) => [...prev, 0]); // Mark the first element as sorted
+  
+    // Finalize sorting
+    setSortedIndex((prev) => [...prev, 0]);
     setCurrentPair(null);
     setSorting(false);
   };
-
-  //merge sort
+  /////////////////////////////////////merge sort///////////////////////////////////////////
   const mergeSort = async (arr: number[]) => {
     const newArr = [...arr];
 
