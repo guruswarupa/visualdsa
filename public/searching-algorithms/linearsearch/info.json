@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Simple to implement and understand, making it a good educational tool.",
+        "Does not require additional memory for storage (in-place sorting).",
+        "Can be efficient for small datasets or nearly sorted data."
+    ],
+    "disadvantages": [
+        "Highly inefficient for larger datasets with a worst-case time complexity of O(n^2).",
+        "Not suitable for performance-critical applications compared to more efficient algorithms.",
+        "Requires many comparisons and shifts for larger or random datasets."
+    ]
+}
