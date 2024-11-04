@@ -1446,8 +1446,8 @@ export default function SortingAlgorithms() {
     const { arr: currentArr, phase: currentPhase } = bogoSortState;
 
     // If the array is empty, set it with the initial array
-    let arr = currentArr.length === 0 ? [...initialArr] : [...currentArr];
-    if (arr.length === 0) {
+    const arr = currentArr.length === 0 ? [...initialArr] : [...currentArr];
+    if (currentArr.length === 0) {
       setBogoSortState({ arr, phase: currentPhase });
     }
 
@@ -1475,8 +1475,7 @@ export default function SortingAlgorithms() {
     // Update state to reflect completion
     setBogoSortState({ arr, phase: "completed" });
   };
-
-
+  
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
