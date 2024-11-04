@@ -1443,16 +1443,18 @@ export default function SortingAlgorithms() {
 
   const bogoSort = async (initialArr: number[]) => {
     // Initialize array and phase if not already set
-    let { arr, phase } = bogoSortState;
+    const { arr: currentArr, phase: currentPhase } = bogoSortState;
+
+    // If the array is empty, set it with the initial array
+    let arr = currentArr.length === 0 ? [...initialArr] : [...currentArr];
     if (arr.length === 0) {
-      arr = [...initialArr];
-      setBogoSortState({ arr, phase });
+      setBogoSortState({ arr, phase: currentPhase });
     }
 
     setSpeed(0); // Set speed to zero for instant visualization of each shuffle
 
     // Shuffle until the array is sorted
-    while (phase === "shuffling" && !isSorted(arr)) {
+    while (currentPhase === "shuffling" && !isSorted(arr)) {
       shuffleArray(arr);
       setArray([...arr]); // Update the array for visualization
       setIterationCount((prev) => prev + 1);
@@ -1473,6 +1475,7 @@ export default function SortingAlgorithms() {
     // Update state to reflect completion
     setBogoSortState({ arr, phase: "completed" });
   };
+
 
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
@@ -1582,8 +1585,8 @@ export default function SortingAlgorithms() {
           <button
             onClick={isPausedRef.current ? playSorting : pauseSorting}
             className={`w-full py-2 px-4 text-white rounded-md transition duration-300 ease-in-out ${isPausedRef.current
-                ? "bg-yellow-600 hover:bg-yellow-500"
-                : "bg-green-600 hover:bg-green-500"
+              ? "bg-yellow-600 hover:bg-yellow-500"
+              : "bg-green-600 hover:bg-green-500"
               }`}
           >
             {isPausedRef.current ? "Resume" : "Pause"}
@@ -1628,8 +1631,8 @@ export default function SortingAlgorithms() {
                     <motion.div
                       key={index}
                       className={`${sortedIndex.includes(index)
-                          ? "bg-green-500"
-                          : "bg-red-600"
+                        ? "bg-green-500"
+                        : "bg-red-600"
                         } 
                                 text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1 relative`}
                       initial={{ opacity: 0, scale: 0.5 }}
