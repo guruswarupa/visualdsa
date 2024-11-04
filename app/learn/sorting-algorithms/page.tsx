@@ -117,12 +117,15 @@ export default function SortingAlgorithms() {
     result: [] as number[],
   });
   const [heapSortState, setHeapSortState] = useState({
-    i: 0, 
-    j: 0, 
+    i: 0,
+    j: 0,
     phase: "heapify",
     heapArr: [] as number[],
   });
-  
+  const [bogoSortState, setBogoSortState] = useState({
+    arr: [] as number[], // The array being sorted
+    phase: "shuffling", // The current phase of the sort
+  });
   ///////////////////update speed as it changes//////////////
   useEffect(() => {
     speedRef.current = speed;
@@ -146,8 +149,8 @@ export default function SortingAlgorithms() {
             `/sorting-algorithms/${selectedAlgorithm
               .toLowerCase()
               .replace(/\s+/g, "")}/${selectedAlgorithm
-              .toLowerCase()
-              .replace(/\s+/g, "")}.png`
+                .toLowerCase()
+                .replace(/\s+/g, "")}.png`
           );
           if (imageResponse.ok) {
             const imageBlob = await imageResponse.blob();
@@ -299,11 +302,16 @@ export default function SortingAlgorithms() {
       result: [] as number[],
     });
     setHeapSortState({
-      i: 0, 
-      j: 0, 
+      i: 0,
+      j: 0,
       phase: "heapify",
       heapArr: [] as number[],
     });
+    setBogoSortState({
+      arr: [] as number[], // The array being sorted
+      phase: "shuffling", // The current phase of the sort
+    });
+
     handleArrayInput(); // Set the input array
     setSorting(true); // Start sorting
     isStoppedRef.current = false; // Ensure sorting isn't stopped
@@ -653,12 +661,12 @@ export default function SortingAlgorithms() {
     const newArr = arr.map(Math.floor);
     const max = Math.max(...newArr);
     let { i, phase, count, result } = countingSortState;
-  
+
     // Initialize count array if it is empty
     if (count.length === 0) {
       count = Array(max + 1).fill(0);
     }
-  
+
     // Phase 1: Count occurrences
     if (phase === "counting") {
       for (; i < newArr.length; i++) {
@@ -667,21 +675,21 @@ export default function SortingAlgorithms() {
           setCountingSortState({ i, phase: "counting", count, result });
           return;
         }
-  
+
         count[newArr[i]]++;
         setIterationCount((prev) => prev + 1);
-  
+
         // Update state after each count increment
         setCountingSortState({ i: i + 1, phase: "counting", count, result });
         await delay(speedRef.current / 2); // Delay for visualization
       }
-  
+
       // Move to the result collection phase
       i = 0;
       phase = "collecting";
       setCountingSortState({ i, phase, count, result });
     }
-  
+
     // Phase 2: Build the sorted result
     if (phase === "collecting") {
       for (; i < count.length; i++) {
@@ -691,7 +699,7 @@ export default function SortingAlgorithms() {
             setCountingSortState({ i, phase: "collecting", count, result });
             return;
           }
-  
+
           result = [...result, i];
           setArray(result);
           setCurrentPair([result.length - 1, i]);
@@ -699,13 +707,13 @@ export default function SortingAlgorithms() {
           await delay(speedRef.current); // Delay for visualization
           setIterationCount((prev) => prev + 1);
           count[i]--;
-  
+
           // Update state after adding each element to the result
           setCountingSortState({ i, phase: "collecting", count, result });
         }
       }
     }
-  
+
     // Finalize sorting
     setCurrentPair(null);
     setSorting(false);
@@ -715,7 +723,7 @@ export default function SortingAlgorithms() {
     const newArr = [...arr];
     const n = newArr.length;
     let { i, j, phase, heapArr } = heapSortState;
-  
+
     // Initialize state on first run or reset
     if (heapArr.length === 0) {
       i = Math.floor(n / 2) - 1;
@@ -723,21 +731,21 @@ export default function SortingAlgorithms() {
       heapArr = newArr;
       setHeapSortState({ i, j, phase, heapArr });
     }
-  
+
     const heapify = async (arr: number[], n: number, i: number) => {
       let largest = i;
       const left = 2 * i + 1;
       const right = 2 * i + 2;
-  
+
       if (left < n && arr[left] > arr[largest]) largest = left;
       if (right < n && arr[right] > arr[largest]) largest = right;
-  
+
       if (largest !== i) {
         [arr[i], arr[largest]] = [arr[largest], arr[i]];
         setArray([...arr]);
         setIterationCount((prev) => prev + 1);
         await delay(speedRef.current);
-  
+
         if (isPausedRef.current || isStoppedRef.current) {
           setHeapSortState({ i, j, phase: "heapify", heapArr: arr });
           return;
@@ -745,7 +753,7 @@ export default function SortingAlgorithms() {
         await heapify(arr, n, largest);
       }
     };
-  
+
     // Phase 1: Build the max heap
     if (phase === "heapify") {
       for (; i >= 0; i--) {
@@ -759,7 +767,7 @@ export default function SortingAlgorithms() {
       i = heapArr.length - 1;
       setHeapSortState({ i, j, phase, heapArr });
     }
-  
+
     // Phase 2: Sort the heap
     if (phase === "sort") {
       for (; i > 0; i--) {
@@ -767,18 +775,18 @@ export default function SortingAlgorithms() {
           setHeapSortState({ i, j, phase: "sort", heapArr });
           return;
         }
-  
+
         [heapArr[0], heapArr[i]] = [heapArr[i], heapArr[0]];
         setArray([...heapArr]);
         setIterationCount((prev) => prev + 1);
         setSortedIndex((prev) => [...prev, i]);
         await delay(speedRef.current);
-  
+
         await heapify(heapArr, i, 0);
         setHeapSortState({ i: i - 1, j, phase: "sort", heapArr });
       }
     }
-  
+
     // Finalize sorting
     setSortedIndex((prev) => [...prev, 0]);
     setCurrentPair(null);
@@ -1299,7 +1307,7 @@ export default function SortingAlgorithms() {
     return i + 1;
   };
 
-  //3 way merge sort
+  ////////////////////////////////////////////////////////3 way merge sort////////////////////////////////////////////////////////
   const mergeSort3Way = async (arr: number[]) => {
     const newArr = [...arr];
 
@@ -1415,7 +1423,7 @@ export default function SortingAlgorithms() {
     }
   };
 
-  // Bogo Sort
+  ////////////////////////////////////////////////////////Bogo sort////////////////////////////////////////////////////////
 
   // Utility function to check if the array is sorted
   const isSorted = (arr: number[]) => {
@@ -1433,22 +1441,37 @@ export default function SortingAlgorithms() {
     }
   };
 
-  //bogo sort
-  const bogoSort = async (arr: number[]) => {
-    const newArr = [...arr];
-    setSpeed(0);
-    // Keep shuffling until the array is sorted
-    while (!isSorted(newArr)) {
-      shuffleArray(newArr);
-      setArray([...newArr]); // Update the array for visualization
-      setIterationCount((prev) => prev + 1);
-      await delay(speedRef.current); // Delay to visualize each shuffle
+  const bogoSort = async (initialArr: number[]) => {
+    // Initialize array and phase if not already set
+    let { arr, phase } = bogoSortState;
+    if (arr.length === 0) {
+      arr = [...initialArr];
+      setBogoSortState({ arr, phase });
     }
 
-    // Once sorted, mark all as sorted
-    setSortedIndex([...Array(newArr.length).keys()]); // Mark all as sorted
+    setSpeed(0); // Set speed to zero for instant visualization of each shuffle
+
+    // Shuffle until the array is sorted
+    while (phase === "shuffling" && !isSorted(arr)) {
+      shuffleArray(arr);
+      setArray([...arr]); // Update the array for visualization
+      setIterationCount((prev) => prev + 1);
+      await delay(speedRef.current); // Delay to visualize each shuffle
+
+      // Check if sorting was paused or stopped
+      if (isPausedRef.current || isStoppedRef.current) {
+        setBogoSortState({ arr, phase: "shuffling" });
+        return;
+      }
+    }
+
+    // Once sorted, mark all elements as sorted
+    setSortedIndex([...Array(arr.length).keys()]); // Mark all as sorted
     setCurrentPair(null); // Clear current pair highlight
     setSorting(false); // Indicate sorting is done
+
+    // Update state to reflect completion
+    setBogoSortState({ arr, phase: "completed" });
   };
 
   const delay = (ms: number) =>
@@ -1512,11 +1535,11 @@ export default function SortingAlgorithms() {
           {(selectedAlgorithm === "Bucket Sort" ||
             selectedAlgorithm === "Radix Sort" ||
             selectedAlgorithm === "Counting Sort") && (
-            <p className="text-sm text-red-500">
-              Note: {selectedAlgorithm} does not support negative numbers or
-              decimals.
-            </p>
-          )}
+              <p className="text-sm text-red-500">
+                Note: {selectedAlgorithm} does not support negative numbers or
+                decimals.
+              </p>
+            )}
           {selectedAlgorithm === "Bogo Sort" && (
             <p className="text-sm text-red-500">
               Note: Bogo Sort is unpredictable.
@@ -1558,11 +1581,10 @@ export default function SortingAlgorithms() {
           </button>
           <button
             onClick={isPausedRef.current ? playSorting : pauseSorting}
-            className={`w-full py-2 px-4 text-white rounded-md transition duration-300 ease-in-out ${
-              isPausedRef.current
+            className={`w-full py-2 px-4 text-white rounded-md transition duration-300 ease-in-out ${isPausedRef.current
                 ? "bg-yellow-600 hover:bg-yellow-500"
                 : "bg-green-600 hover:bg-green-500"
-            }`}
+              }`}
           >
             {isPausedRef.current ? "Resume" : "Pause"}
           </button>
@@ -1605,11 +1627,10 @@ export default function SortingAlgorithms() {
                   {array.map((num, index) => (
                     <motion.div
                       key={index}
-                      className={`${
-                        sortedIndex.includes(index)
+                      className={`${sortedIndex.includes(index)
                           ? "bg-green-500"
                           : "bg-red-600"
-                      } 
+                        } 
                                 text-white text-base sm:text-xl p-2 sm:p-4 rounded-md mx-1 relative`}
                       initial={{ opacity: 0, scale: 0.5 }}
                       animate={{ opacity: 1, scale: 1 }}
