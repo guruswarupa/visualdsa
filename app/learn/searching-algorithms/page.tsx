@@ -1,5 +1,4 @@
 "use client";
-import { ArrowUpIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import hljs from "highlight.js";
