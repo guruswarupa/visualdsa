@@ -578,38 +578,41 @@ export default function SearchingAlgorithms() {
     //////////////////////////////////////// Jump Search //////////////////////////////////////////////
     const jumpSearch = async (array: number[], key: number | null) => {
         if (key === null) return;
-
+    
         const length = array.length;
-        let { stepCount, prev, step } = jumpSearchState;
-
+        const { stepCount, prev, step } = jumpSearchState;
+    
         // Initialize the step and prev if not already set
-        if (step === 0 && prev === 0) {
-            step = Math.floor(Math.sqrt(length)); // Jump size is sqrt of array length
-            prev = 0;
+        let currentStep = step;
+        let currentPrev = prev;
+    
+        if (currentStep === 0 && currentPrev === 0) {
+            currentStep = Math.floor(Math.sqrt(length)); // Jump size is sqrt of array length
+            currentPrev = 0;
         }
-
-        while (prev < length) {
+    
+        while (currentPrev < length) {
             if (isPausedRef.current || isStoppedRef.current) {
-                setJumpSearchState({ stepCount, prev, step }); // Save state on pause/stop
+                setJumpSearchState({ stepCount, prev: currentPrev, step: currentStep });
                 return;
             }
-
-            setCurrentIndex(Math.min(step, length) - 1); // Visualize the current block's last element
+    
+            setCurrentIndex(Math.min(currentStep, length) - 1); // Visualize the current block's last element
             setStepCount(stepCount + 1);
             await delay(speedRef.current);
-
-            if (array[Math.min(step, length) - 1] >= key) {
+    
+            if (array[Math.min(currentStep, length) - 1] >= key) {
                 // Perform linear search within the identified block
-                for (let i = prev; i < Math.min(step, length); i++) {
+                for (let i = currentPrev; i < Math.min(currentStep, length); i++) {
                     if (isPausedRef.current || isStoppedRef.current) {
-                        setJumpSearchState({ stepCount, prev, step }); // Save state on pause/stop
+                        setJumpSearchState({ stepCount, prev: currentPrev, step: currentStep });
                         return;
                     }
-
+    
                     setCurrentIndex(i);
                     setStepCount(stepCount + 1);
                     await delay(speedRef.current);
-
+    
                     if (array[i] === key) {
                         setFoundIndex(i);
                         break;
@@ -617,16 +620,16 @@ export default function SearchingAlgorithms() {
                 }
                 break;
             }
-
-            prev = step; // Move to the next block
-            step += Math.floor(Math.sqrt(length)); // Increase step size for the next jump
+    
+            currentPrev = currentStep;
+            currentStep += Math.floor(Math.sqrt(length));
         }
-
+    
         // Reset state after search completes
         setJumpSearchState({ stepCount: 0, prev: 0, step: 0 });
         setSearching(false);
     };
-
+    
     //////////////////////////////////////// Interpolation Search //////////////////////////////////////////////
     const interpolationSearch = async (array: number[], key: number | null) => {
         if (key === null || array.length === 0) return;
