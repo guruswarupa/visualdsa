@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Much more efficient than linear search for large datasets, with a time complexity of O(log n).",
+        "Can quickly locate an element in a sorted dataset, reducing the number of comparisons needed.",
+        "Requires fewer iterations compared to linear search, making it suitable for performance-critical applications."
+    ],
+    "disadvantages": [
+        "Requires the dataset to be sorted before the search, which can add overhead if sorting is needed.",
+        "Not suitable for linked lists as it requires random access to elements.",
+        "If the data is frequently changing, maintaining the sorted order can become complex and inefficient."
+    ]
+}

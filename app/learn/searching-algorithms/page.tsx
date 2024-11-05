@@ -77,6 +77,51 @@ export default function SearchingAlgorithms() {
 
     /////////////////////////////////adding states for each algorithm////////////////////////////////////
     const [linearSearchState, setLinearSearchState] = useState({ index: 0, stepCount: 0 });
+    const [sentinelLinearSearchState, setSentinelLinearSearchState] = useState({ index: 0, stepCount: 0 });
+    const [binarySearchState, setBinarySearchState] = useState({ low: 0, high: 0, stepCount: 0 });
+    const [metaBinarySearchState, setMetaBinarySearchState] = useState({
+        low: 0,
+        high: 0,
+        stepCount: 0,
+    });
+    const [ternarySearchState, setTernarySearchState] = useState({
+        low: 0,
+        high: 0,
+        stepCount: 0,
+    });
+    const [jumpSearchState, setJumpSearchState] = useState({
+        stepCount: 0,
+        prev: 0,
+        step: 0,
+    });
+    const [interpolationSearchState, setInterpolationSearchState] = useState({
+        low: 0,
+        high: 0,
+        stepCount: 0,
+    });
+    const [exponentialSearchState, setExponentialSearchState] = useState({
+        bound: 0,
+        stepCount: 0,
+    });
+    const [fibonacciSearchState, setFibonacciSearchState] = useState({
+        fibM2: 0, // (m-2)'th Fibonacci number
+        fibM1: 1, // (m-1)'th Fibonacci number
+        fibM: 1,  // m'th Fibonacci number
+        offset: -1, // Offset for the current search range
+        stepCount: 0,
+    });
+    // State for Ubiquitous Binary Search
+    const [ubiquitousBinarySearchState, setUbiquitousBinarySearchState] = useState({
+        low: 0,        // Lower bound of the search range
+        high: 0,      // Upper bound of the search range
+        stepCount: 0, // Step counter to track number of steps
+    });
+    // State for Two Pointers Technique
+    const [twoPointersTechniqueState, setTwoPointersTechniqueState] = useState({
+        left: 0,       // Left pointer
+        right: 0,      // Right pointer
+        stepCount: 0,  // Step counter to track number of steps
+    });
 
     ///////////////////update speed as it changes//////////////
     useEffect(() => {
@@ -196,6 +241,50 @@ export default function SearchingAlgorithms() {
     const handleVisualizeSearching = () => {
         setStepCount(0);
         setLinearSearchState({ index: 0, stepCount: 0 });
+        setSentinelLinearSearchState({ index: 0, stepCount: 0 });
+        setBinarySearchState({ low: 0, high: 0, stepCount: 0 });
+        setMetaBinarySearchState({
+            low: 0,
+            high: 0,
+            stepCount: 0,
+        });
+        setTernarySearchState({
+            low: 0,
+            high: 0,
+            stepCount: 0,
+        });
+        setJumpSearchState({
+            stepCount: 0,
+            prev: 0,
+            step: 0,
+        });
+        setInterpolationSearchState({
+            low: 0,
+            high: 0,
+            stepCount: 0,
+        });
+        setExponentialSearchState({
+            bound: 0,
+            stepCount: 0,
+        });
+        setFibonacciSearchState({
+            fibM2: 0,
+            fibM1: 1,
+            fibM: 1,
+            offset: -1,
+            stepCount: 0,
+        });
+        setUbiquitousBinarySearchState({
+            low: 0,
+            high: 0,
+            stepCount: 0,
+        });
+        setTwoPointersTechniqueState({
+            left: 0,
+            right: 0,
+            stepCount: 0,
+        });
+
         setFoundIndex(null);
         const parsedKey = parseFloat(searchKey);
         if (isNaN(parsedKey)) {
@@ -245,7 +334,37 @@ export default function SearchingAlgorithms() {
 
             switch (selectedAlgorithm) {
                 case "Linear Search":
-                    linearSearch(array, parsedKey);
+                    await linearSearch(array, parsedKey);
+                    break;
+                case "Sentinel Linear Search":
+                    await sentinelLinearSearch(array, parsedKey);
+                    break;
+                case "Binary Search":
+                    await binarySearch(array, parsedKey);
+                    break;
+                case "Meta Binary Search":
+                    await metaBinarySearch(array, parsedKey);
+                    break;
+                case "Ternary Search":
+                    await ternarySearch(array, parsedKey);
+                    break;
+                case "Jump Search":
+                    await jumpSearch(array, parsedKey);
+                    break;
+                case "Interpolation Search":
+                    await interpolationSearch(array, parsedKey);
+                    break;
+                case "Exponential Search":
+                    await exponentialSearch(array, parsedKey);
+                    break;
+                case "Fibonacci Search":
+                    await fibonacciSearch(array, parsedKey);
+                    break;
+                case "The Ubiquitous Binary Search":
+                    await ubiquitousBinarySearch(array, parsedKey);
+                    break;
+                case "Two Pointers Technique":
+                    await twoPointersTechnique(array, parsedKey);
                     break;
                 default:
                     break;
@@ -254,7 +373,6 @@ export default function SearchingAlgorithms() {
 
         search();
     }, [searching, selectedAlgorithm]);
-
 
     //////////////////////////////////////// Linear Search //////////////////////////////////////////////
     const linearSearch = async (array: number[], key: number | null) => {
@@ -283,6 +401,482 @@ export default function SearchingAlgorithms() {
         // Update state to indicate search completion
         setLinearSearchState({ index: 0, stepCount: 0 }); // Reset state
         setSearching(false); // Set searching to false after the search completes
+    };
+
+    //////////////////////////////////////// Sentinel Linear Search //////////////////////////////////////////////
+    const sentinelLinearSearch = async (array: number[], key: number | null) => {
+        if (key === null) return;
+
+        let { index } = sentinelLinearSearchState;
+
+        // Add the sentinel at the end of the array
+        const last = array[array.length - 1];
+        array[array.length - 1] = key;
+
+        while (array[index] !== key) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setSentinelLinearSearchState({ index, stepCount: sentinelLinearSearchState.stepCount });
+                return;
+            }
+
+            setCurrentIndex(index);
+            setStepCount((prevCount) => prevCount + 1);
+            await delay(speedRef.current);
+
+            index++;
+        }
+
+        array[array.length - 1] = last; // Restore the last element
+
+        // Check if the element was found
+        if (index < array.length - 1 || last === key) {
+            setFoundIndex(index);
+        }
+
+        setSentinelLinearSearchState({ index: 0, stepCount: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Binary Search //////////////////////////////////////////////
+    const binarySearch = async (array: number[], key: number | null) => {
+        if (key === null) return;
+
+        let { low, high } = binarySearchState;
+        low = 0;
+        high = array.length - 1;
+
+        while (low <= high) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setBinarySearchState({ low, high, stepCount: binarySearchState.stepCount });
+                return;
+            }
+
+            const mid = Math.floor((low + high) / 2);
+            setCurrentIndex(mid);
+            setStepCount((prevCount) => prevCount + 1);
+            await delay(speedRef.current);
+
+            if (array[mid] === key) {
+                setFoundIndex(mid);
+                break;
+            } else if (array[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        setBinarySearchState({ low: 0, high: array.length - 1, stepCount: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Meta Binary Search //////////////////////////////////////////////
+    const metaBinarySearch = async (array: number[], key: number | null) => {
+        if (key === null) return;
+
+        let { low, high, stepCount } = metaBinarySearchState; // Destructure the state
+
+        // Initialize low and high for the first run if not set yet
+        if (low === 0 && high === 0) {
+            low = 0;
+            high = array.length - 1;
+        }
+
+        while (low <= high) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setMetaBinarySearchState({ low, high, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            const mid = low + ((high - low) >> 1); // Bit-shift for dividing by 2 (optimized)
+            setCurrentIndex(mid); // Visualize the current index
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current); // Control the speed
+
+            if (array[mid] === key) {
+                setFoundIndex(mid);
+                break;
+            } else if (array[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+
+            stepCount++;
+        }
+
+        // Reset state after search completes or if the element isn't found
+        setMetaBinarySearchState({ low: 0, high: array.length - 1, stepCount: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Ternary Search //////////////////////////////////////////////
+    const ternarySearch = async (array: number[], key: number | null) => {
+        if (key === null) return;
+
+        let { low, high, stepCount } = ternarySearchState; // Destructure the state
+
+        // Initialize low and high for the first run if not set yet
+        if (low === 0 && high === 0) {
+            low = 0;
+            high = array.length - 1;
+        }
+
+        while (low <= high) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setTernarySearchState({ low, high, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            // Divide the array into three parts
+            const mid1 = low + Math.floor((high - low) / 3);
+            const mid2 = high - Math.floor((high - low) / 3);
+
+            // Visualize mid1
+            setCurrentIndex(mid1);
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            // Check if the key is at mid1
+            if (array[mid1] === key) {
+                setFoundIndex(mid1);
+                break;
+            }
+
+            // Visualize mid2
+            setCurrentIndex(mid2);
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            // Check if the key is at mid2
+            if (array[mid2] === key) {
+                setFoundIndex(mid2);
+                break;
+            }
+
+            // If the key is smaller than mid1, search the left third
+            if (key < array[mid1]) {
+                high = mid1 - 1;
+            }
+            // If the key is greater than mid2, search the right third
+            else if (key > array[mid2]) {
+                low = mid2 + 1;
+            }
+            // Otherwise, search the middle third
+            else {
+                low = mid1 + 1;
+                high = mid2 - 1;
+            }
+
+            stepCount++;
+        }
+
+        // Reset state after search completes or if the element isn't found
+        setTernarySearchState({ low: 0, high: array.length - 1, stepCount: 0 });
+        setSearching(false);
+    };
+    //////////////////////////////////////// Jump Search //////////////////////////////////////////////
+    const jumpSearch = async (array: number[], key: number | null) => {
+        if (key === null) return;
+
+        const length = array.length;
+        let { stepCount, prev, step } = jumpSearchState;
+
+        // Initialize the step and prev if not already set
+        if (step === 0 && prev === 0) {
+            step = Math.floor(Math.sqrt(length)); // Jump size is sqrt of array length
+            prev = 0;
+        }
+
+        while (prev < length) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setJumpSearchState({ stepCount, prev, step }); // Save state on pause/stop
+                return;
+            }
+
+            setCurrentIndex(Math.min(step, length) - 1); // Visualize the current block's last element
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[Math.min(step, length) - 1] >= key) {
+                // Perform linear search within the identified block
+                for (let i = prev; i < Math.min(step, length); i++) {
+                    if (isPausedRef.current || isStoppedRef.current) {
+                        setJumpSearchState({ stepCount, prev, step }); // Save state on pause/stop
+                        return;
+                    }
+
+                    setCurrentIndex(i);
+                    setStepCount(stepCount + 1);
+                    await delay(speedRef.current);
+
+                    if (array[i] === key) {
+                        setFoundIndex(i);
+                        break;
+                    }
+                }
+                break;
+            }
+
+            prev = step; // Move to the next block
+            step += Math.floor(Math.sqrt(length)); // Increase step size for the next jump
+        }
+
+        // Reset state after search completes
+        setJumpSearchState({ stepCount: 0, prev: 0, step: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Interpolation Search //////////////////////////////////////////////
+    const interpolationSearch = async (array: number[], key: number | null) => {
+        if (key === null || array.length === 0) return;
+
+        let { low, high, stepCount } = interpolationSearchState;
+
+        // Initialize low and high for the first run if not set yet
+        if (low === 0 && high === 0) {
+            low = 0;
+            high = array.length - 1;
+        }
+
+        while (low <= high && key >= array[low] && key <= array[high]) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setInterpolationSearchState({ low, high, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            // Estimate the position using interpolation formula
+            const pos: number = low + Math.floor(((high - low) / (array[high] - array[low])) * (key - array[low]));
+
+            // Visualize the current position
+            setCurrentIndex(pos);
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[pos] === key) {
+                setFoundIndex(pos);
+                break;
+            }
+
+            if (array[pos] < key) {
+                low = pos + 1;
+            } else {
+                high = pos - 1;
+            }
+
+            stepCount++;
+        }
+
+        // Reset state after search completes
+        setInterpolationSearchState({ low: 0, high: array.length - 1, stepCount: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Exponential Search //////////////////////////////////////////////
+    const exponentialSearch = async (array: number[], key: number | null) => {
+        if (key === null || array.length === 0) return;
+
+        let { bound, stepCount } = exponentialSearchState; // Destructure state
+
+        if (bound === 0) bound = 1; // Start with bound = 1 if not already set
+
+        // Find the range by exponentially increasing the bound
+        while (bound < array.length && array[bound] < key) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setExponentialSearchState({ bound, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            setCurrentIndex(bound); // Visualize current bound
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            bound *= 2; // Double the bound
+        }
+
+        // Perform Binary Search in the found range
+        let low = Math.floor(bound / 2);
+        let high = Math.min(bound, array.length - 1);
+
+        while (low <= high) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setExponentialSearchState({ bound, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            const mid = low + Math.floor((high - low) / 2);
+            setCurrentIndex(mid); // Visualize the current mid
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[mid] === key) {
+                setFoundIndex(mid);
+                break;
+            } else if (array[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+
+            stepCount++;
+        }
+
+        // Reset state after search completes
+        setExponentialSearchState({ bound: 0, stepCount: 0 });
+        setSearching(false);
+    };
+
+    //////////////////////////////////////// Fibonacci Search //////////////////////////////////////////////
+    const fibonacciSearch = async (array: number[], key: number | null) => {
+        if (key === null || array.length === 0) return;
+
+        let { fibM2, fibM1, fibM, offset, stepCount } = fibonacciSearchState; // Destructure state
+
+        // Initialize Fibonacci numbers if not already set
+        if (fibM === 0) {
+            fibM2 = 0; // (m-2)'th Fibonacci number
+            fibM1 = 1; // (m-1)'th Fibonacci number
+            fibM = fibM2 + fibM1; // m'th Fibonacci number
+        }
+
+        // Find the smallest Fibonacci number greater than or equal to array.length
+        while (fibM < array.length) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setFibonacciSearchState({ fibM2, fibM1, fibM, offset, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            fibM2 = fibM1;
+            fibM1 = fibM;
+            fibM = fibM2 + fibM1;
+        }
+
+        while (fibM > 1) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setFibonacciSearchState({ fibM2, fibM1, fibM, offset, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            const i = Math.min(offset + fibM2, array.length - 1);
+            setCurrentIndex(i); // Visualize the current index
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[i] === key) {
+                setFoundIndex(i);
+                break;
+            } else if (array[i] < key) {
+                fibM = fibM1;
+                fibM1 = fibM2;
+                fibM2 = fibM - fibM1;
+                offset = i;
+            } else {
+                fibM = fibM2;
+                fibM1 -= fibM2;
+                fibM2 = fibM - fibM1;
+            }
+
+            stepCount++;
+        }
+
+        // Check if the last element is the key
+        if (fibM1 && array[offset + 1] === key) {
+            setFoundIndex(offset + 1);
+        }
+
+        // Reset state after search completes
+        setFibonacciSearchState({
+            fibM2: 0,
+            fibM1: 1,
+            fibM: 1,
+            offset: -1,
+            stepCount: 0,
+        });
+        setSearching(false);
+    };
+    //////////////////////////////////////// Ubiquitous Binary Search //////////////////////////////////////////////
+    const ubiquitousBinarySearch = async (array: number[], key: number | null) => {
+        if (key === null || array.length === 0) return;
+
+        let { low, high, stepCount } = ubiquitousBinarySearchState;
+
+        // Initialize low and high for the first run if not set yet
+        if (low === 0 && high === 0) {
+            low = 0;
+            high = array.length - 1;
+        }
+
+        while (low <= high) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setUbiquitousBinarySearchState({ low, high, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            const mid = Math.floor((low + high) / 2);
+            setCurrentIndex(mid); // Highlight the mid index
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[mid] === key) {
+                setFoundIndex(mid);
+                break;
+            } else if (array[mid] < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+
+            stepCount++;
+        }
+
+        // Reset state after search completes
+        setUbiquitousBinarySearchState({ low: 0, high: array.length - 1, stepCount: 0 });
+        setSearching(false);
+    };
+    //////////////////////////////////////// Two Pointers Technique //////////////////////////////////////////////
+    const twoPointersTechnique = async (array: number[], key: number | null) => {
+        if (key === null || array.length === 0) return;
+
+        let { left, right, stepCount } = twoPointersTechniqueState;
+
+        // Initialize left and right pointers for the first run if not set yet
+        if (left === 0 && right === 0) {
+            left = 0;
+            right = array.length - 1;
+        }
+
+        while (left <= right) {
+            if (isPausedRef.current || isStoppedRef.current) {
+                setTwoPointersTechniqueState({ left, right, stepCount }); // Save state on pause/stop
+                return;
+            }
+
+            setCurrentIndex(left); // Highlight the left pointer
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[left] === key) {
+                setFoundIndex(left);
+                break;
+            }
+
+            setCurrentIndex(right); // Highlight the right pointer
+            setStepCount(stepCount + 1);
+            await delay(speedRef.current);
+
+            if (array[right] === key) {
+                setFoundIndex(right);
+                break;
+            }
+
+            left++;
+            right--;
+            stepCount++;
+        }
+
+        // Reset state after search completes
+        setTwoPointersTechniqueState({ left: 0, right: array.length - 1, stepCount: 0 });
+        setSearching(false);
     };
 
     const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

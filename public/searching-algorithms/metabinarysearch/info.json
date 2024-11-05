@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Optimizes the search process by using additional information (like frequency counts) to speed up searches in sorted datasets.",
+        "Can significantly reduce the number of comparisons in scenarios where certain elements appear more frequently.",
+        "Works well for static datasets where the frequency distribution of elements is known in advance."
+    ],
+    "disadvantages": [
+        "Requires additional memory to store frequency counts or other metadata, which can be a downside in memory-constrained environments.",
+        "More complex to implement than standard binary search due to the need for pre-processing the dataset.",
+        "Not suitable for dynamic datasets where element frequencies change frequently, as it would require constant updates."
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Highly efficient for solving problems that involve pairs or subarrays, often achieving linear time complexity O(n).",
+        "Can reduce the space complexity compared to other methods, as it typically uses a constant amount of extra space.",
+        "Versatile and applicable to a wide range of problems, including sorting, merging, and finding pairs that satisfy certain conditions."
+    ],
+    "disadvantages": [
+        "May not be applicable to all types of problems, particularly those that do not involve sorted or sequential data.",
+        "Can become complex for certain algorithms where the relationship between pointers is not straightforward.",
+        "Requires careful implementation to ensure that pointers do not exceed array boundaries, especially in edge cases."
+    ]
+}

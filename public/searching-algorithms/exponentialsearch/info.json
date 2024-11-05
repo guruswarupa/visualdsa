@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Efficient for unbounded or infinite datasets, as it quickly finds the range in which the target may exist.",
+        "Combines binary search with the ability to find the bounds of the search space, leading to a time complexity of O(log n) after the range is identified.",
+        "Effective for sparse data structures, as it reduces the number of comparisons needed."
+    ],
+    "disadvantages": [
+        "Requires the dataset to be sorted beforehand.",
+        "Can be less efficient than binary search for small datasets due to the overhead of range finding.",
+        "Not suitable for linked lists as it requires random access to elements."
+    ]
+}

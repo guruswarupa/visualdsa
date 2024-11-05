@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Improves the efficiency of linear search by eliminating the need for boundary checks, which can speed up searches in practice.",
+        "Simple to implement and understand, making it a good educational tool.",
+        "Effective for small datasets where linear search is already sufficient."
+    ],
+    "disadvantages": [
+        "Still has a worst-case time complexity of O(n), making it inefficient for large datasets.",
+        "The added sentinel can consume extra memory, which may be a consideration in memory-constrained environments.",
+        "Not suitable for linked lists, as the concept of a sentinel is less effective without random access."
+    ]
+}

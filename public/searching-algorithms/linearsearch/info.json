@@ -1,12 +1,12 @@
 {
     "advantages": [
         "Simple to implement and understand, making it a good educational tool.",
-        "Does not require additional memory for storage (in-place sorting).",
-        "Can be efficient for small datasets or nearly sorted data."
+        "Does not require any additional memory for storage (in-place searching).",
+        "Can be used on unsorted or unordered lists without any preprocessing."
     ],
     "disadvantages": [
-        "Highly inefficient for larger datasets with a worst-case time complexity of O(n^2).",
-        "Not suitable for performance-critical applications compared to more efficient algorithms.",
-        "Requires many comparisons and shifts for larger or random datasets."
+        "Inefficient for large datasets with a worst-case time complexity of O(n).",
+        "Not suitable for performance-critical applications compared to more efficient search algorithms like binary search.",
+        "Requires scanning each element in the dataset, leading to potentially high execution times for large lists."
     ]
 }

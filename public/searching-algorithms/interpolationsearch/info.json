@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "More efficient than binary search for uniformly distributed datasets, with an average time complexity of O(log log n).",
+        "Reduces the number of comparisons by estimating the position of the target based on its value relative to the dataset's bounds.",
+        "Works well for large datasets where the elements are evenly distributed."
+    ],
+    "disadvantages": [
+        "Requires the dataset to be sorted and uniformly distributed for optimal performance.",
+        "Inefficient for datasets with a non-uniform distribution or when the values are closely spaced, leading to a worst-case time complexity of O(n).",
+        "Not suitable for linked lists or other data structures without random access."
+    ]
+}
