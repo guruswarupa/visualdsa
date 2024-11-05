@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Flexibility: Allows insertion and deletion of elements from both ends, providing more versatility compared to a standard stack.",
+        "Efficient operations: Operations like push and pop can be performed in O(1) time from both the front and back.",
+        "Enhanced functionality: Can be used to implement other data structures, such as deques, which can serve as both stacks and queues."
+    ],
+    "disadvantages": [
+        "Increased complexity: Implementing a double-ended stack can be more complex than a simple stack due to the additional functionality.",
+        "Higher memory usage: Requires additional pointers or references to manage both ends, which may increase memory overhead.",
+        "Less intuitive: The operations and behavior may be less straightforward for those accustomed to traditional stack or queue structures."
+    ]
+}

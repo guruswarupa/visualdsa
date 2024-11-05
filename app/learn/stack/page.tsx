@@ -1,8 +1,30 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import { FaArrowUp, FaArrowDown, FaEye, FaTrash, FaInfoCircle, FaSearch } from "react-icons/fa";
+import hljs from "highlight.js";
+
+const stackOptions = [
+    "Simple Stack",
+    "Parallel Stack",
+    "Circular Stack",
+    "Double Ended Stack",
+];
+
+///////////////////////////////////////interface for storing code///////////////////////////////////
+interface CodeFiles {
+    c: string | null;
+    java: string | null;
+    python: string | null;
+    javascript: string | null;
+    typescript: string | null;
+    csharp: string | null;
+    cplusplus: string | null;
+    rust: string | null;
+    ruby: string | null;
+    lua: string | null;
+}
 
 export default function StackVisualization() {
     const [stackInput, setStackInput] = useState<string>("");
@@ -10,7 +32,161 @@ export default function StackVisualization() {
     const [searchValue, setSearchValue] = useState<number | string>("");
     const [operationMessage, setOperationMessage] = useState<string>("");
 
-    const codeBlockRef = useRef<HTMLPreElement | null>(null);
+    const [selectedDataStructure, setSelectedDataStructure] = useState("Simple Stack");
+    const [advantages, setAdvantages] = useState<string[]>([]);
+    const [disadvantages, setDisadvantages] = useState<string[]>([]);
+    const [algorithmImage, setAlgorithmImage] = useState<string | null>(null);
+    const [codeFiles, setCodeFiles] = useState<CodeFiles>({
+        c: null,
+        java: null,
+        python: null,
+        javascript: null,
+        typescript: null,
+        csharp: null,
+        cplusplus: null,
+        rust: null,
+        ruby: null,
+        lua: null,
+    });
+    const [selectedLanguage, setSelectedLanguage] = useState<string>("");
+    const codeBlockRef = useRef<HTMLElement | null>(null);
+
+    ////////////////load the website with all the data required/////////////////
+    useEffect(() => {
+        const fetchDSData = async () => {
+            try {
+                const response = await fetch(
+                    `/stack/${selectedDataStructure
+                        .toLowerCase()
+                        .replace(/\s+/g, "")}/info.json`
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    setAdvantages(data.advantages);
+                    setDisadvantages(data.disadvantages);
+
+                    const imageResponse = await fetch(
+                        `/stack/${selectedDataStructure
+                            .toLowerCase()
+                            .replace(/\s+/g, "")}/${selectedDataStructure
+                                .toLowerCase()
+                                .replace(/\s+/g, "")}.png`
+                    );
+                    if (imageResponse.ok) {
+                        const imageBlob = await imageResponse.blob();
+                        setAlgorithmImage(URL.createObjectURL(imageBlob));
+                    }
+
+                    const languages = [
+                        "c",
+                        "java",
+                        "py",
+                        "js",
+                        "ts",
+                        "cs",
+                        "cpp",
+                        "rs",
+                        "rb",
+                        "lua",
+                    ];
+                    const codeData: CodeFiles = {
+                        c: null,
+                        java: null,
+                        python: null,
+                        javascript: null,
+                        typescript: null,
+                        csharp: null,
+                        cplusplus: null,
+                        rust: null,
+                        ruby: null,
+                        lua: null,
+                    };
+                    for (const lang of languages) {
+                        const codeResponse = await fetch(
+                            `/stack/${selectedDataStructure
+                                .toLowerCase()
+                                .replace(/\s+/g, "")}/code.${lang}`
+                        );
+                        if (codeResponse.ok) {
+                            const codeText = await codeResponse.text();
+                            switch (lang) {
+                                case "c":
+                                    codeData.c = codeText;
+                                    break;
+                                case "java":
+                                    codeData.java = codeText;
+                                    break;
+                                case "py":
+                                    codeData.python = codeText;
+                                    break;
+                                case "js":
+                                    codeData.javascript = codeText;
+                                    break;
+                                case "ts":
+                                    codeData.typescript = codeText;
+                                    break;
+                                case "cs":
+                                    codeData.csharp = codeText;
+                                    break;
+                                case "cpp":
+                                    codeData.cplusplus = codeText;
+                                    break;
+                                case "rs":
+                                    codeData.rust = codeText;
+                                    break;
+                                case "rb":
+                                    codeData.ruby = codeText;
+                                    break;
+                                case "lua":
+                                    codeData.lua = codeText;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    setCodeFiles(codeData);
+                } else {
+                    console.error("Failed to fetch algorithm info.json");
+                }
+            } catch (error) {
+                console.error("Error fetching algorithm data:", error);
+            }
+        };
+
+        fetchDSData();
+    }, [selectedDataStructure]);
+
+    ////////////////////////load the code as language changes////////////////////////
+    useEffect(() => {
+        if (codeBlockRef.current) {
+            // Unset 'data-highlighted' attribute if previously set
+            if (codeBlockRef.current.getAttribute("data-highlighted") === "yes") {
+                codeBlockRef.current.removeAttribute("data-highlighted");
+            }
+
+            // Apply new highlighting
+            hljs.highlightElement(codeBlockRef.current);
+
+            // Set 'data-highlighted' to mark it as highlighted
+            codeBlockRef.current.setAttribute("data-highlighted", "yes");
+        }
+    }, [codeFiles, selectedLanguage]);
+
+    // Function to copy code to clipboard
+    const copyToClipboard = () => {
+        const code = codeFiles[selectedLanguage as keyof CodeFiles]; // Get the code for the selected language
+        if (code) {
+            navigator.clipboard.writeText(code).then(() => {
+                toast("Code copied to clipboard!");
+            });
+        }
+    };
+
+    // Handle language selection
+    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedLanguage(e.target.value);
+    };
 
     const performOperation = (operation: string) => {
         switch (operation) {
@@ -180,8 +356,108 @@ export default function StackVisualization() {
                     </div>
                     <div className="bg-gray-800 p-4 rounded-md w-full">
                         <h3 className="text-lg font-semibold text-[#F5F5F5]">Operation Result:</h3>
-                        <pre ref={codeBlockRef} className="text-sm text-gray-300">{operationMessage}</pre>
+                        <pre className="text-sm text-gray-300">{operationMessage}</pre>
                     </div>
+                    <div className="pt-10">
+                        <label className="block mb-2 text-sm text-[#F5F5F5]">
+                            Select Stack Data Structure:
+                        </label>
+                        <select
+                            className="w-full p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
+                            value={selectedDataStructure}
+                            onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                setSelectedDataStructure(selectedValue);
+                            }}
+                        >
+                            {stackOptions.map((algorithm) => (
+                                <option key={algorithm} value={algorithm}>
+                                    {algorithm}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="my-8 p-4 bg-[#1F1F1F] rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">
+                            Advantages
+                        </h3>
+                        <ul className="list-disc list-inside mb-4 p-2">
+                            {advantages.map((adv, index) => (
+                                <li key={index} className="text-[#E0E0E0] mb-2">
+                                    {adv}
+                                </li>
+                            ))}
+                        </ul>
+
+                        <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">
+                            Disadvantages
+                        </h3>
+                        <ul className="list-disc list-inside mb-4 p-2">
+                            {disadvantages.map((dis, index) => (
+                                <li key={index} className="text-[#E0E0E0] mb-2">
+                                    {dis}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Algorithm Image */}
+                    {algorithmImage && (
+                        <img
+                            src={algorithmImage}
+                            alt={`${selectedDataStructure} Illustration`}
+                            className="my-4 w-full max-w-lg mx-auto rounded-lg object-contain"
+                        />
+                    )}
+
+                    {/* Language Dropdown */}
+                    <h2 className="mt-12 text-2xl font-bold mb-2 text-[#F5F5F5]">
+                        Source Code
+                    </h2>
+                    <label
+                        htmlFor="languageSelect"
+                        className="block mt-2 text-[#F5F5F5]"
+                    >
+                        Select Language:
+                    </label>
+                    <select
+                        id="languageSelect"
+                        value={selectedLanguage}
+                        onChange={handleLanguageChange}
+                        className="mt-2 mb-4 p-2 border bg-gray-800 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                        <option>Select</option>
+                        <option value="c">C</option>
+                        <option value="cplusplus">C++</option>
+                        <option value="java">Java</option>
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="csharp">C#</option>
+                        <option value="rust">Rust</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="lua">Lua</option>
+                    </select>
+
+                    {/* Display Code Snippet for selected language */}
+                    {codeFiles[selectedLanguage as keyof CodeFiles] && (
+                        <div className="text-left">
+                            <pre className="bg-gray-800 p-4 rounded overflow-x-auto">
+                                <code
+                                    ref={codeBlockRef}
+                                    className={`language-${selectedLanguage}`}
+                                >
+                                    {codeFiles[selectedLanguage as keyof CodeFiles]}
+                                </code>
+                            </pre>
+                            <button
+                                onClick={copyToClipboard}
+                                className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                            >
+                                Copy Code
+                            </button>
+                        </div>
+                    )}
                 </div>
             </motion.div>
             <Toaster position="top-right" />

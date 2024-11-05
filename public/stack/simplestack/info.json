@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Simplicity: Stacks are easy to implement and understand, making them great for beginners.",
+        "Last In, First Out (LIFO): This property makes stacks useful for reversing data and for backtracking algorithms.",
+        "Memory efficiency: Stacks can be implemented using arrays or linked lists, allowing for dynamic memory allocation."
+    ],
+    "disadvantages": [
+        "Limited access: Only the top element can be accessed or modified, making it less flexible than other data structures like queues or lists.",
+        "Fixed size: If implemented as an array, stacks have a fixed size which can lead to overflow if the limit is exceeded.",
+        "Inefficient for some operations: Operations like searching for an element or accessing elements other than the top can be inefficient."
+    ]
+}
