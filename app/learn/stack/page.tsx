@@ -460,7 +460,7 @@ export default function StackVisualization() {
                     )}
                 </div>
             </motion.div>
-            <Toaster position="top-right" />
+            <Toaster position="bottom-right" />
         </div>
     );
 }

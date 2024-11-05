@@ -59,6 +59,7 @@ interface CodeFiles {
   rust: string | null;
   ruby: string | null;
   lua: string | null;
+  d: string | null;
 }
 
 export default function SortingAlgorithms() {
@@ -87,6 +88,7 @@ export default function SortingAlgorithms() {
     rust: null,
     ruby: null,
     lua: null,
+    d: null,
   });
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const codeBlockRef = useRef<HTMLElement | null>(null); // Reference to the code block
@@ -168,6 +170,7 @@ export default function SortingAlgorithms() {
             "rs",
             "rb",
             "lua",
+            "d",
           ];
           const codeData: CodeFiles = {
             c: null,
@@ -180,6 +183,7 @@ export default function SortingAlgorithms() {
             rust: null,
             ruby: null,
             lua: null,
+            d: null,
           };
           for (const lang of languages) {
             const codeResponse = await fetch(
@@ -220,6 +224,9 @@ export default function SortingAlgorithms() {
                 case "lua":
                   codeData.lua = codeText;
                   break;
+                case "d":
+                    codeData.d = codeText;
+                    break;
                 default:
                   break;
               }
@@ -1757,6 +1764,7 @@ export default function SortingAlgorithms() {
                 <option value="rust">Rust</option>
                 <option value="ruby">Ruby</option>
                 <option value="lua">Lua</option>
+                <option value="d">D</option>
               </select>
 
               {/* Display Code Snippet for selected language */}
