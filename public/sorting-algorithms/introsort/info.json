@@ -1,16 +1,13 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Combines the best features of Quick Sort, Heap Sort, and Insertion Sort, making it efficient for a wide range of input scenarios.",
+        "Inherits Quick Sort's average-case performance of O(n log n) while avoiding its worst-case scenario by switching to Heap Sort.",
+        "Stable in practice, as it can be implemented to maintain the order of equal elements.",
+        "Adaptive: can handle nearly sorted data effectively."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Implementation complexity is higher compared to simpler sorting algorithms.",
+        "Requires additional memory for the stack, particularly in recursive implementations.",
+        "In practice, may not perform as well as specialized algorithms for specific types of data."
+    ]
 }

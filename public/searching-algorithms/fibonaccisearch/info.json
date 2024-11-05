@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Also requires the dataset to be sorted and is based on Fibonacci numbers, which can provide a more efficient approach than binary search in some cases.",
+        "Can be implemented using less memory than binary search due to its iterative nature.",
+        "Better suited for systems where division operations are expensive, as it primarily uses additions."
+    ],
+    "disadvantages": [
+        "More complex to implement compared to binary search.",
+        "Has a similar time complexity of O(log n) but can have higher constant factors, making it less efficient in practice for smaller datasets.",
+        "Requires pre-computation of Fibonacci numbers, which can add overhead."
+    ]
+}

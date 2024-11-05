@@ -1,16 +1,15 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Efficient with a time complexity of O(n log n) in all cases (best, average, and worst).",
+        "In-place sorting algorithm, requiring only a constant amount of additional memory (O(1)).",
+        "Not sensitive to the input data; performs consistently regardless of the initial order of elements.",
+        "Stable if implemented correctly, preserving the relative order of equal elements.",
+        "Useful for large datasets where other algorithms may not perform well."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Not a stable sorting algorithm in its basic form, which may affect the order of equal elements.",
+        "Slower in practice compared to more advanced algorithms like quicksort and mergesort for smaller datasets due to larger constant factors.",
+        "The complexity of implementation is higher than simpler algorithms like bubble sort or insertion sort.",
+        "Heap operations (insertions and deletions) can be slower compared to other structures, which may affect performance in certain applications."
+    ]
 }

@@ -1,16 +1,16 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Hybrid sorting algorithm combining Merge Sort and Insertion Sort, providing the benefits of both.",
+        "Stable sort: maintains the relative order of equal elements.",
+        "Adaptive: performs well on partially sorted arrays, achieving O(n) complexity in best cases.",
+        "Efficient for large datasets, with a time complexity of O(n log n) in average and worst cases.",
+        "Minimizes the number of comparisons and moves, leading to better performance in practice compared to other O(n log n) algorithms."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Complex implementation compared to simpler algorithms like Insertion Sort or Selection Sort.",
+        "Requires additional memory for the temporary array used in the merge step, which can be an issue for large datasets.",
+        "The performance may degrade on highly random datasets compared to more specialized sorting algorithms.",
+        "Not as widely understood or implemented as other sorting algorithms like Quick Sort or Merge Sort."
+    ]
+
 }

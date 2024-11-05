@@ -1,16 +1,14 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "An improvement over simple sorting algorithms like Insertion Sort, providing better time complexity (O(n log n) in the best case).",
+        "In-place sorting algorithm, requiring only a small, constant amount of additional memory (O(1)).",
+        "Adaptive: performs well on partially sorted arrays and can be tuned with different gap sequences for better performance.",
+        "Simple to understand and implement, making it a good choice for educational purposes."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Time complexity can vary significantly depending on the choice of gap sequence, making it difficult to predict performance in some cases.",
+        "Not a stable sorting algorithm, which may affect the order of equal elements.",
+        "Generally not as efficient as more advanced algorithms like Quick Sort or Merge Sort for larger datasets.",
+        "Performance on large datasets can be inferior compared to more optimized algorithms."
+    ]
 }

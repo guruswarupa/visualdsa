@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Simple to implement and understand, making it a good educational tool.",
+        "Does not require any additional memory for storage (in-place searching).",
+        "Can be used on unsorted or unordered lists without any preprocessing."
+    ],
+    "disadvantages": [
+        "Inefficient for large datasets with a worst-case time complexity of O(n).",
+        "Not suitable for performance-critical applications compared to more efficient search algorithms like binary search.",
+        "Requires scanning each element in the dataset, leading to potentially high execution times for large lists."
+    ]
+}

@@ -1,16 +1,15 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Extremely efficient for sorting integers or objects with a small range of key values, achieving O(n + k) time complexity.",
+        "Stable sorting algorithm, preserving the relative order of equal elements.",
+        "In-place sorting can be implemented, requiring minimal additional memory.",
+        "Simple to implement and understand, making it a good choice for educational purposes.",
+        "Well-suited for applications where the range of input values is known beforehand."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Not a comparison-based sorting algorithm, which limits its application to specific types of data (usually non-negative integers).",
+        "Requires extra memory proportional to the range of input values, which can be impractical for large ranges.",
+        "Inefficient for data with a large range of values but a small number of elements (e.g., sorting numbers between 1 and 1,000,000 when only a few elements are present).",
+        "Cannot be used for sorting objects directly unless keys are extracted and counted."
+    ]
 }

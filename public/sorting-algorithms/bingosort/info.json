@@ -1,16 +1,12 @@
 {
     "advantages": [
-        "Simple to understand and implement.",
-        "Does not require any additional memory (in-place sorting).",
-        "Efficient for small datasets or nearly sorted data.",
-        "Stable sorting algorithm (maintains the relative order of equal elements).",
-        "Adaptive: performs well for nearly sorted data, with O(n) complexity in the best case."
+        "Simple to implement and understand, making it a good educational tool.",
+        "Does not require additional memory for storage (in-place sorting).",
+        "Can be efficient for small datasets or nearly sorted data."
     ],
     "disadvantages": [
-        "Inefficient for large datasets with a time complexity of O(n^2) in average and worst cases.",
-        "Not suitable for large lists, especially when more efficient algorithms like quicksort or mergesort are available.",
-        "Slower compared to advanced sorting algorithms for larger or random data.",
-        "Requires more comparisons and shifts for larger datasets."
-    ],
-    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
+        "Highly inefficient for larger datasets with a worst-case time complexity of O(n^2).",
+        "Not suitable for performance-critical applications compared to more efficient algorithms.",
+        "Requires many comparisons and shifts for larger or random datasets."
+    ]
 }

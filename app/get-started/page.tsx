@@ -5,18 +5,18 @@ import { motion } from "framer-motion";
 
 export default function GetStarted() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#121212] text-[#E0E0E0] font-sans">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#121212] text-[#E0E0E0] font-sans overflow-hidden">
       <motion.main
         className="text-center px-8 py-12 sm:px-16 sm:py-20"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <motion.h1
           className="text-4xl sm:text-6xl font-bold mb-6 text-[#F5F5F5]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
           Get Started with Visual DSA
         </motion.h1>
@@ -25,7 +25,7 @@ export default function GetStarted() {
           className="text-lg sm:text-xl mb-12 max-w-2xl mx-auto"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
         >
           Ready to dive into Data Structures and Algorithms? Start exploring visual simulations of key concepts, from sorting algorithms to complex data structures.
         </motion.p>
@@ -34,52 +34,88 @@ export default function GetStarted() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
         >
           <Link href="/learn/sorting-algorithms">
-            <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
+            <motion.div
+              className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Sorting Algorithms
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/searching-algorithms">
-            <div className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]">
+            <motion.div
+              className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Searching Algorithms
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/stack">
-            <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
+            <motion.div
+              className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Stack
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/queue">
-            <div className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]">
+            <motion.div
+              className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Queue
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/linked-list">
-            <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
+            <motion.div
+              className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Linked List
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/trees">
-            <div className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]">
+            <motion.div
+              className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Trees
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/graphs">
-            <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
+            <motion.div
+              className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Graphs
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/recursion">
-            <div className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]">
+            <motion.div
+              className="bg-[#1F1F1F] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#383838]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Recursion
-            </div>
+            </motion.div>
           </Link>
           <Link href="/learn/dynamic-programming">
-            <div className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]">
+            <motion.div
+              className="bg-[#E62B1E] text-white py-3 px-6 rounded-full text-lg transition hover:bg-[#C6261A]"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Dynamic Programming
-            </div>
+            </motion.div>
           </Link>
         </motion.div>
       </motion.main>

@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Combines the benefits of linear search and binary search, providing an efficient search method with a time complexity of O(√n).",
+        "Works on sorted datasets and can be more efficient than binary search for large datasets.",
+        "Simple to implement and requires less memory compared to other search algorithms."
+    ],
+    "disadvantages": [
+        "Requires the dataset to be sorted prior to searching.",
+        "The choice of block size can affect performance; selecting a suboptimal size may lead to inefficiencies.",
+        "Less efficient than binary search for small datasets due to the overhead of jumping."
+    ]
+}
