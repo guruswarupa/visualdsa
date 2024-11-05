@@ -12,5 +12,5 @@
         "Slower compared to advanced sorting algorithms for larger or random data.",
         "Requires more comparisons and shifts for larger datasets."
     ],
-    "languages": ["C", "Java", "Python", "JavaScript"]
+    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
 }

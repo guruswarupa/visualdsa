@@ -9,6 +9,6 @@
     "Not suitable for large lists due to its poor performance compared to more advanced algorithms like quicksort or mergesort.",
     "The performance does not improve significantly with optimizations compared to other algorithms."
     ],
-    "languages": ["C", "Java", "Python", "JavaScript"]
+    "languages": ["C", "Java", "Python", "JavaScript", "TypeScript", "Ruby", "Lua", "Rust"]
 }
   
