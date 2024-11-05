@@ -578,29 +578,29 @@ export default function SearchingAlgorithms() {
     //////////////////////////////////////// Jump Search //////////////////////////////////////////////
     const jumpSearch = async (array: number[], key: number | null) => {
         if (key === null) return;
-    
+
         const length = array.length;
         const { stepCount, prev, step } = jumpSearchState;
-    
+
         // Initialize the step and prev if not already set
         let currentStep = step;
         let currentPrev = prev;
-    
+
         if (currentStep === 0 && currentPrev === 0) {
             currentStep = Math.floor(Math.sqrt(length)); // Jump size is sqrt of array length
             currentPrev = 0;
         }
-    
+
         while (currentPrev < length) {
             if (isPausedRef.current || isStoppedRef.current) {
                 setJumpSearchState({ stepCount, prev: currentPrev, step: currentStep });
                 return;
             }
-    
+
             setCurrentIndex(Math.min(currentStep, length) - 1); // Visualize the current block's last element
             setStepCount(stepCount + 1);
             await delay(speedRef.current);
-    
+
             if (array[Math.min(currentStep, length) - 1] >= key) {
                 // Perform linear search within the identified block
                 for (let i = currentPrev; i < Math.min(currentStep, length); i++) {
@@ -608,11 +608,11 @@ export default function SearchingAlgorithms() {
                         setJumpSearchState({ stepCount, prev: currentPrev, step: currentStep });
                         return;
                     }
-    
+
                     setCurrentIndex(i);
                     setStepCount(stepCount + 1);
                     await delay(speedRef.current);
-    
+
                     if (array[i] === key) {
                         setFoundIndex(i);
                         break;
@@ -620,16 +620,16 @@ export default function SearchingAlgorithms() {
                 }
                 break;
             }
-    
+
             currentPrev = currentStep;
             currentStep += Math.floor(Math.sqrt(length));
         }
-    
+
         // Reset state after search completes
         setJumpSearchState({ stepCount: 0, prev: 0, step: 0 });
         setSearching(false);
     };
-    
+
     //////////////////////////////////////// Interpolation Search //////////////////////////////////////////////
     const interpolationSearch = async (array: number[], key: number | null) => {
         if (key === null || array.length === 0) return;
@@ -924,6 +924,61 @@ export default function SearchingAlgorithms() {
                         </select>
                     </div>
 
+                    {(selectedAlgorithm === "Linear Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Linear Search is not efficient for large datasets.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Sentinel Linear Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Sentinel Linear Search is best for small to medium-sized datasets.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Binary Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Binary Search requires the dataset to be sorted.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Meta Binary Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Meta Binary Search is suitable for sorted datasets with known frequency distributions.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Ternary Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Ternary Search works only on sorted datasets.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Jump Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Jump Search requires the dataset to be sorted.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Interpolation Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Interpolation Search is efficient only for uniformly distributed sorted datasets.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Exponential Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Exponential Search is designed for unbounded or infinite datasets and requires sorting.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Fibonacci Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Fibonacci Search is applicable only to sorted datasets.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Ubiquitous Binary Search" && (
+                        <p className="text-sm text-red-500">
+                            Note: Ubiquitous Binary Search requires a sorted dataset.
+                        </p>
+                    ))}
+                    {(selectedAlgorithm === "Two Pointers Technique" && (
+                        <p className="text-sm text-red-500">
+                            Note: Two Pointers Technique works best with sorted data or linked lists.
+                        </p>
+                    ))}
                     {/* Input Array */}
                     <div>
                         <h3 className="text-lg font-semibold text-[#F5F5F5]">Input Array</h3>
