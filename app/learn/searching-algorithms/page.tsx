@@ -16,7 +16,7 @@ const searchingOptions = [
     "Interpolation Search",
     "Exponential Search",
     "Fibonacci Search",
-    "The Ubiquitous Binary Search",
+    "Ubiquitous Binary Search",
     "Two Pointers Technique",
 ];
 
@@ -360,7 +360,7 @@ export default function SearchingAlgorithms() {
                 case "Fibonacci Search":
                     await fibonacciSearch(array, parsedKey);
                     break;
-                case "The Ubiquitous Binary Search":
+                case "Ubiquitous Binary Search":
                     await ubiquitousBinarySearch(array, parsedKey);
                     break;
                 case "Two Pointers Technique":
