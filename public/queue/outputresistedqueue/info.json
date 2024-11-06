@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Simplified output management: Restricting only the dequeue operation reduces system complexity.",
+        "Efficient enqueuing: Can handle inputs freely while controlling when output is allowed.",
+        "Useful for specialized applications: Effective in scenarios where the system needs to control the timing of output."
+    ],
+    "disadvantages": [
+        "Limited dequeue flexibility: Restricting output can cause the queue to become blocked or delay operations.",
+        "Potential bottlenecks: If the dequeue operation is restricted too much, it may create a bottleneck in processing.",
+        "Harder to manage: Managing restrictions on only the output side can add complexity to the system’s design."
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Efficient priority management: Ensures that elements with higher priority are dequeued before those with lower priority.",
+        "Optimized for certain algorithms: Perfect for applications like job scheduling, bandwidth management, and Dijkstra’s algorithm.",
+        "Flexibility in task handling: Priorities allow for better handling of urgent tasks in complex systems."
+    ],
+    "disadvantages": [
+        "Increased complexity: The priority sorting and maintenance make the queue more complex to implement.",
+        "Slower than regular queues: Due to the need for priority maintenance, enqueue and dequeue operations can be slower.",
+        "Potential for imbalance: If priorities are not managed carefully, the queue may become too focused on higher-priority elements, leading to starvation of lower-priority tasks."
+    ]
+}

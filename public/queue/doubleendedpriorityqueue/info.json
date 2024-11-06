@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Versatile priority management: Allows both ends to have different priorities, useful in more complex scheduling algorithms.",
+        "Efficient data retrieval: Provides fast access to both the highest and lowest priority elements.",
+        "Supports complex applications: Ideal for applications requiring both increasing and decreasing priority order handling."
+    ],
+    "disadvantages": [
+        "Complex implementation: The handling of both ends and priorities increases implementation difficulty.",
+        "Higher memory usage: Requires additional memory to store both ends and maintain priority levels.",
+        "Slower operations: Operations may not always be as fast as simpler queue structures due to the need for priority balancing."
+    ]
+}

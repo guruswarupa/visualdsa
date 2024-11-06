@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Space-efficient: Reuses empty slots when elements are dequeued, avoiding overflow in fixed-size implementations.",
+        "Constant time operations: Both enqueue and dequeue operations are O(1), making them efficient.",
+        "Simple implementation: Reduces the need for complex memory management when dealing with queue overflow."
+    ],
+    "disadvantages": [
+        "Complex implementation: Handling wrap-around logic and resizing in circular queues can complicate the implementation.",
+        "Potential for underutilization: If elements are not dequeued efficiently, space may remain unused.",
+        "Limited flexibility: The queue's fixed size can still lead to overflow if not managed carefully."
+    ]
+}

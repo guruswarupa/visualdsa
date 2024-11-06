@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Flexibility: Allows elements to be added or removed from both ends, making it versatile for different applications.",
+        "Efficient operations: Supports O(1) operations for both enqueue and dequeue at both ends.",
+        "Ideal for certain algorithms: Suitable for algorithms that require access to both ends of a queue (e.g., sliding window problems)."
+    ],
+    "disadvantages": [
+        "Increased complexity: The implementation is more complex compared to a simple queue, requiring careful management of both ends.",
+        "Extra space required: Needs more memory than a basic queue due to its flexibility in operations.",
+        "Potential for misuse: If not used correctly, the dual-ended operations could lead to less predictable behavior."
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Simplified input management: Only enqueuing is restricted, simplifying the input operation while maintaining flexibility in dequeueing.",
+        "Efficient dequeue operations: Elements can still be dequeued normally, maintaining quick access to the front.",
+        "Useful in certain applications: Perfect for situations where input comes from a specific source, but output is free-flowing."
+    ],
+    "disadvantages": [
+        "Limited functionality: Restricting input can cause issues when the system requires flexible enqueue operations.",
+        "Complex to manage: Requires additional logic to handle input restrictions and ensure it does not affect system performance.",
+        "Difficult to balance: The restriction on inputs may cause the queue to become empty or underutilized if not managed carefully."
+    ]
+}

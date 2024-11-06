@@ -322,21 +322,21 @@ export default function StackVisualization() {
                 </div>
             </motion.div>
             <motion.div
-                className="w-full lg:w-3/4 p-6 bg-[#121212] overflow-y-auto rounded-lg shadow-lg"
+                className="w-full lg:w-3/4 p-6 bg-[#121212] overflow-y-auto rounded-lg shadow-2xl"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
             >
                 {/* Centered stack visualization and operation result */}
-                <div className="flex flex-col items-center bg-[#1F1F1F] p-4 sm:p-8 rounded-lg min-h-[300px] w-[100%]">
-                    <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#F5F5F5]">Stack Visualization</h2>
+                <div className="flex flex-col items-center bg-[#1F1F1F] p-6 sm:p-8 rounded-lg min-h-[300px] w-[100%]">
+                    <h2 className="text-xl sm:text-2xl font-bold mb-4 text-[#F5F5F5]">Stack Visualization</h2>
                     <div className="flex items-center justify-center mb-4">
                         {stack.length > 0 ? (
                             stack.map((num, index) => (
                                 <motion.div
                                     key={index}
-                                    className={`text-white text-base sm:text-xl p-4 rounded-md mx-1 shadow-lg 
-                            ${index === stack.length - 1 ? 'bg-gradient-to-b from-yellow-500 to-yellow-700' : 'bg-gradient-to-b from-red-500 to-red-700'}`}
+                                    className={`text-white text-base sm:text-xl p-5 rounded-md mx-2 shadow-lg 
+                ${index === stack.length - 1 ? 'bg-gradient-to-b from-yellow-500 to-yellow-700' : 'bg-gradient-to-b from-red-500 to-red-700'}`}
                                     initial={{ opacity: 0, scale: 0.5, y: -20 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.5, y: 20 }}
@@ -347,7 +347,7 @@ export default function StackVisualization() {
                             ))
                         ) : (
                             <motion.div
-                                className="text-white text-xl p-4 rounded-md mx-1 shadow-lg bg-gray-700"
+                                className="text-white text-xl p-5 rounded-md mx-2 shadow-lg bg-gray-700"
                                 initial={{ opacity: 0, scale: 0.5, y: -20 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -357,17 +357,17 @@ export default function StackVisualization() {
                         )}
                     </div>
 
-                    <div className="bg-gray-800 p-4 rounded-md w-full max-w-md">
-                        <h3 className="text-lg font-semibold text-[#F5F5F5]">Operation Result:</h3>
+                    <div className="bg-gray-800 p-6 rounded-md w-full max-w-xl">
+                        <h3 className="text-xl font-semibold text-[#F5F5F5]">Operation Result:</h3>
                         <pre className="text-sm text-gray-300 text-center">{operationMessage}</pre>
                     </div>
                 </div>
 
                 {/* Left-aligned sections below */}
-                <div className="pt-10">
-                    <label className="block mb-2 text-sm text-[#F5F5F5]">Select Stack Data Structure:</label>
+                <div className="pt-12">
+                    <label className="block mb-3 text-md text-[#F5F5F5]">Select Stack Data Structure:</label>
                     <select
-                        className="w-full p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
+                        className="w-full p-3 bg-[#121212] border border-[#383838] text-white rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         value={selectedDataStructure}
                         onChange={(e) => {
                             const selectedValue = e.target.value;
@@ -382,16 +382,16 @@ export default function StackVisualization() {
                     </select>
                 </div>
 
-                <div className="my-8 p-4 bg-[#1F1F1F] rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Advantages</h3>
-                    <ul className="list-disc list-inside mb-4 p-2">
+                <div className="my-10 p-6 bg-[#1F1F1F] rounded-lg shadow-md">
+                    <h3 className="text-xl font-semibold mb-4 text-[#F5F5F5]">Advantages</h3>
+                    <ul className="list-disc list-inside mb-6 p-2">
                         {advantages.map((adv, index) => (
                             <li key={index} className="text-[#E0E0E0] mb-2">{adv}</li>
                         ))}
                     </ul>
 
-                    <h3 className="text-lg font-semibold mb-2 text-[#F5F5F5]">Disadvantages</h3>
-                    <ul className="list-disc list-inside mb-4 p-2">
+                    <h3 className="text-xl font-semibold mb-4 text-[#F5F5F5]">Disadvantages</h3>
+                    <ul className="list-disc list-inside mb-6 p-2">
                         {disadvantages.map((dis, index) => (
                             <li key={index} className="text-[#E0E0E0] mb-2">{dis}</li>
                         ))}
@@ -403,25 +403,22 @@ export default function StackVisualization() {
                     <img
                         src={algorithmImage}
                         alt={`${selectedDataStructure} Illustration`}
-                        className="my-4 w-full max-w-lg mx-auto rounded-lg object-contain"
+                        className="my-6 w-full max-w-lg mx-auto rounded-lg object-contain"
                     />
                 )}
 
                 {/* Language Dropdown */}
-                <h2 className="mt-12 text-2xl font-bold mb-2 text-[#F5F5F5]">
+                <h2 className="mt-12 text-3xl font-bold mb-4 text-[#F5F5F5]">
                     Source Code
                 </h2>
-                <label
-                    htmlFor="languageSelect"
-                    className="block mt-2 text-[#F5F5F5]"
-                >
+                <label htmlFor="languageSelect" className="block mt-4 text-[#F5F5F5]">
                     Select Language:
                 </label>
                 <select
                     id="languageSelect"
                     value={selectedLanguage}
                     onChange={handleLanguageChange}
-                    className="mt-2 mb-4 p-2 border bg-gray-800 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="mt-3 mb-6 p-3 border bg-gray-800 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 >
                     <option>Select</option>
                     <option value="c">C</option>
@@ -439,7 +436,7 @@ export default function StackVisualization() {
                 {/* Display Code Snippet for selected language */}
                 {codeFiles[selectedLanguage as keyof CodeFiles] && (
                     <div className="text-left">
-                        <pre className="bg-gray-800 p-4 rounded overflow-x-auto">
+                        <pre className="bg-gray-800 p-6 rounded overflow-x-auto">
                             <code
                                 ref={codeBlockRef}
                                 className={`language-${selectedLanguage}`}
@@ -449,7 +446,7 @@ export default function StackVisualization() {
                         </pre>
                         <button
                             onClick={copyToClipboard}
-                            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                            className="mt-4 px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
                         >
                             Copy Code
                         </button>

@@ -1,0 +1,12 @@
+{
+    "advantages": [
+        "Parallelism: Multiple queues allow simultaneous processing of different tasks, increasing throughput.",
+        "Task segregation: Can be used to separate tasks into different queues based on their type or priority.",
+        "Improved scalability: More queues allow for more parallel operations, improving the system's scalability."
+    ],
+    "disadvantages": [
+        "Management complexity: Handling multiple queues requires careful monitoring and synchronization to prevent issues.",
+        "Increased overhead: Maintaining multiple queues requires more resources, potentially slowing down the system.",
+        "Uneven load: If tasks are not distributed evenly, some queues may become overloaded while others are underutilized."
+    ]
+}
