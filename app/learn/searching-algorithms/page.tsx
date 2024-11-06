@@ -186,7 +186,40 @@ export default function SearchingAlgorithms() {
                         );
                         if (codeResponse.ok) {
                             const codeText = await codeResponse.text();
-                            codeData[lang as keyof CodeFiles] = codeText;
+                            switch (lang) {
+                                case "c":
+                                    codeData.c = codeText;
+                                    break;
+                                case "java":
+                                    codeData.java = codeText;
+                                    break;
+                                case "py":
+                                    codeData.python = codeText;
+                                    break;
+                                case "js":
+                                    codeData.javascript = codeText;
+                                    break;
+                                case "ts":
+                                    codeData.typescript = codeText;
+                                    break;
+                                case "cs":
+                                    codeData.csharp = codeText;
+                                    break;
+                                case "cpp":
+                                    codeData.cplusplus = codeText;
+                                    break;
+                                case "rs":
+                                    codeData.rust = codeText;
+                                    break;
+                                case "rb":
+                                    codeData.ruby = codeText;
+                                    break;
+                                case "lua":
+                                    codeData.lua = codeText;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                     setCodeFiles(codeData);
@@ -204,12 +237,22 @@ export default function SearchingAlgorithms() {
     ////////////////////////load the code as language changes////////////////////////
     useEffect(() => {
         if (codeBlockRef.current) {
+            // Unset 'data-highlighted' attribute if previously set
+            if (codeBlockRef.current.getAttribute("data-highlighted") === "yes") {
+                codeBlockRef.current.removeAttribute("data-highlighted");
+            }
+
+            // Apply new highlighting
             hljs.highlightElement(codeBlockRef.current);
+
+            // Set 'data-highlighted' to mark it as highlighted
+            codeBlockRef.current.setAttribute("data-highlighted", "yes");
         }
     }, [codeFiles, selectedLanguage]);
 
+    // Function to copy code to clipboard
     const copyToClipboard = () => {
-        const code = codeFiles[selectedLanguage as keyof CodeFiles];
+        const code = codeFiles[selectedLanguage as keyof CodeFiles]; // Get the code for the selected language
         if (code) {
             navigator.clipboard.writeText(code).then(() => {
                 toast("Code copied to clipboard!");
@@ -217,9 +260,11 @@ export default function SearchingAlgorithms() {
         }
     };
 
+    // Handle language selection
     const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedLanguage(e.target.value);
     };
+
 
     const handleArrayInput = (input: string) => {
         const numbers = input.split(",").map((num) => parseFloat(num.trim()));
