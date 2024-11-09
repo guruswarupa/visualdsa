@@ -112,61 +112,62 @@ export default function Home() {
 
         {/* Sliding Icons */}
         <motion.div
-          className="flex justify-start items-center whitespace-nowrap mt-8" // Start alignment
-          initial={{ translateX: '100%' }} // Start from the right
-          animate={{ translateX: animationX[screenSize] }} // Slide to the left
+          className="flex justify-start items-center whitespace-nowrap mt-8"
+          initial={{ translateX: '100%' }} 
+          animate={{ translateX: animationX[screenSize] }} 
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         >
-          {/* Add your images here */}
-          <Image
-            src="/icons/geeksforgeeks.png"
-            alt="GeeksforGeeks"
-            width={180}
-            height={80}
-            className="mx-4 sm:mx-10"
-          />
-          <Image
-            src="/icons/google.png"
-            alt="Google Search"
-            width={100}
-            height={80}
-            className="mx-4 sm:mx-10"
-          />
-          <Image
-            src="/icons/stackoverflow.png"
-            alt="Stack Overflow"
-            width={280}
-            height={120}
-            className="mx-4 sm:mx-10"
-          />
-          <Image
-            src="/icons/openai.png"
-            alt="ChatGPT"
-            width={280}
-            height={120}
-            className="mx-4 sm:mx-0"
-          />
-          <Image
-            src="/icons/vercel.png"
-            alt="Vercel"
-            width={280}
-            height={260}
-            className="mx-4 sm:mx-0"
-          />
-          <Image
-            src="/icons/nextjs.png"
-            alt="Next.js"
-            width={260}
-            height={240}
-            className="mx-4 sm:mx-0"
-          />
-          <Image
-            src="/icons/github.png"
-            alt="GitHub"
-            width={140}
-            height={140}
-            className="mx-4 sm:mx-0"
-          />
+          <div className="flex space-x-12"> 
+            <Image
+              src="/icons/geeksforgeeks.png"
+              alt="GeeksforGeeks"
+              width={180}
+              height={80}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/google.png"
+              alt="Google Search"
+              width={100}
+              height={80}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/stackoverflow.png"
+              alt="Stack Overflow"
+              width={280}
+              height={120}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/openai.png"
+              alt="ChatGPT"
+              width={240}
+              height={80}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/nextjs.png"
+              alt="Next.js"
+              width={220}
+              height={100}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/vercel.png"
+              alt="Vercel"
+              width={290}
+              height={194}
+              className="object-contain"
+            />
+            <Image
+              src="/icons/github.png"
+              alt="GitHub"
+              width={120}
+              height={120}
+              className="object-contain"
+            />
+          </div>
         </motion.div>
       </div>
     </div>
