@@ -193,7 +193,10 @@ export default function StackVisualization() {
         switch (operation) {
             case "Push":
                 if (stackInput) {
-                    const numbersToPush = stackInput.split(",").map((num) => parseFloat(num.trim()));
+                    const numbersToPush = stackInput
+                    .split(/\s+/)
+                    .filter(num => num) // Remove empty strings
+                    .map(num => parseFloat(num.trim()));
                     const newStack = [...stack];
 
                     // Removed max size check
@@ -271,7 +274,7 @@ export default function StackVisualization() {
                             type="text"
                             value={stackInput}
                             onChange={(e) => setStackInput(e.target.value)}
-                            placeholder="Enter numbers separated by commas"
+                            placeholder="Enter numbers separated by space"
                             className="w-full mt-2 p-2 bg-[#121212] border border-[#383838] text-white rounded-md"
                         />
                     </div>
