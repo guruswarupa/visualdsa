@@ -265,18 +265,18 @@ export default function SearchingAlgorithms() {
         setSelectedLanguage(e.target.value);
     };
 
-    const handleArrayInput = (input: string) =>  {
-        const numbers = arrayInput
-          .split(/\s+/)
+
+    const handleArrayInput = (input: string) => {
+        const numbers = input.split(/\s+/)
           .filter(num => num) // Remove empty strings
           .map(num => parseFloat(num.trim())); // Parse decimal and negative numbers
-        
         setArray(numbers);
-        setOriginalArray(numbers); // Store original array
+        setOriginalArray(numbers);
         setSearching(false);
         setCurrentIndex(null);
         setFoundIndex(null);
-      };
+    };
+    
 
     const handleSearchKeyInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchKey(e.target.value);
