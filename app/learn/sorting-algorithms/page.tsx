@@ -125,8 +125,8 @@ export default function SortingAlgorithms() {
     heapArr: [] as number[],
   });
   const [bogoSortState, setBogoSortState] = useState({
-    arr: [] as number[], // The array being sorted
-    phase: "shuffling", // The current phase of the sort
+    arr: [] as number[],
+    phase: "shuffling", 
   });
   ///////////////////update speed as it changes//////////////
   useEffect(() => {
@@ -319,40 +319,38 @@ export default function SortingAlgorithms() {
       heapArr: [] as number[],
     });
     setBogoSortState({
-      arr: [] as number[], // The array being sorted
-      phase: "shuffling", // The current phase of the sort
+      arr: [] as number[], 
+      phase: "shuffling",
     });
 
-    handleArrayInput(); // Set the input array
-    setSorting(true); // Start sorting
-    isStoppedRef.current = false; // Ensure sorting isn't stopped
-    isPausedRef.current = false; // Reset paused state
+    handleArrayInput(); 
+    setSorting(true);
+    isStoppedRef.current = false;
+    isPausedRef.current = false; 
   };
 
   const playSorting = () => {
-    isPausedRef.current = false; // Set paused to false
+    isPausedRef.current = false; 
 
-    // If sorting was stopped, prepare to restart
     if (isStoppedRef.current) {
-      handleArrayInput(); // Reset current state for sorting
-      setSorting(true); // Start sorting
-      isStoppedRef.current = false; // Reset the stop state
+      handleArrayInput(); 
+      setSorting(true);
+      isStoppedRef.current = false;
     } else if (!sorting) {
-      // If it wasn't stopped but paused, we need to continue
-      setSorting(true); // Resume sorting
+      setSorting(true);
     }
   };
 
   const pauseSorting = () => {
-    isPausedRef.current = true; // Mark sorting as paused
-    setSorting(false); // Stop the rendering loop
+    isPausedRef.current = true;
+    setSorting(false); 
   };
 
   const stopSorting = () => {
     setIterationCount(0);
-    isStoppedRef.current = true; // Mark sorting as stopped
-    setSorting(false); // Stop sorting
-    setArray(originalArray); // Reset to the original array
+    isStoppedRef.current = true;
+    setSorting(false);
+    setArray(originalArray);
     setCurrentPair(null);
     setSortedIndex([]);
   };
@@ -1596,7 +1594,8 @@ export default function SortingAlgorithms() {
           >
             Stop
           </button>
-          <button
+          {selectedAlgorithm !== "Merge Sort" && selectedAlgorithm !== "Quick Sort" && selectedAlgorithm !== "Radix Sort" && selectedAlgorithm !==  "Shell Sort" && selectedAlgorithm !== "Tim Sort" && selectedAlgorithm !== "Bitonic Sort" && selectedAlgorithm !== "Cycle Sort" && selectedAlgorithm !== "Pigeonhole Sort" && selectedAlgorithm !== "Comb Sort" && selectedAlgorithm !== "Introsort" && selectedAlgorithm !== "3-Way Merge Sort" && (
+            <button
             onClick={isPausedRef.current ? playSorting : pauseSorting}
             className={`w-full py-2 px-4 text-white rounded-md transition duration-300 ease-in-out ${isPausedRef.current
               ? "bg-yellow-600 hover:bg-yellow-500"
@@ -1605,6 +1604,7 @@ export default function SortingAlgorithms() {
           >
             {isPausedRef.current ? "Resume" : "Pause"}
           </button>
+           )}
         </div>
       </motion.div>
 
