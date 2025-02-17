@@ -1,4 +1,4 @@
-class GfG {
+class SelectionSort {
 
     static void selectionSort(int[] arr) {
         int n = arr.length;
