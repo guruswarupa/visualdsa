@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Toaster, toast } from "sonner";
-import { FaArrowRight, FaArrowLeft, FaSearch, FaTrash, FaInfoCircle } from "react-icons/fa";
+import { FaArrowRight, FaArrowLeft} from "react-icons/fa";
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
 
