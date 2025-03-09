@@ -1,7 +1,7 @@
-"use client";
-
+'use client';
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, Upload, Volume2, MessageCircle } from "lucide-react";
+import ReactMarkdown from "react-markdown"; // Import react-markdown
 
 export default function AIChat() {
   const [messages, setMessages] = useState([
@@ -152,6 +152,24 @@ export default function AIChat() {
     };
   }, []);
 
+  // Create custom components for ReactMarkdown to handle styles
+  const markdownComponents = {
+    p: ({ children }) => (
+      <p className="text-gray-800 mb-2">{children}</p> // Style paragraphs
+    ),
+    code: ({ children }) => (
+      <code className="bg-gray-200 p-1 rounded">{children}</code> // Style inline code
+    ),
+    pre: ({ children }) => (
+      <pre className="bg-gray-800 text-white p-3 rounded overflow-x-auto">{children}</pre> // Style code blocks with horizontal scrolling
+    ),
+    a: ({ href, children }) => (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="text-[#E62B1E]">
+        {children}
+      </a> // Style links
+    ),
+  };
+
   return (
     <div>
       <div
@@ -189,7 +207,11 @@ export default function AIChat() {
                     }`}
                   >
                     <div className="flex-1">
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                      <div className="max-w-full break-words">
+                        <ReactMarkdown components={markdownComponents}>
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
                       <span className="text-xs opacity-75 mt-1 block">
                         {msg.role === "user" ? "You" : "Guru AI"} •{" "}
                         {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
